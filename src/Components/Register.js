@@ -1,73 +1,55 @@
+import React, {useState, useCallback} from 'react';
+import axios from "axios";
 
-import React, {Component} from 'react';
-
-
-class Register extends Component {
-  state = {
-    username: "",
+function Register() {
+  const [user, setUser] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    dateofbirth: "",
     password: "",
-    avatar: "",
-    bio: ""
-  }
+    passwordconfirm: ""
+  });
 
+  const handleChange = useCallback( e => {
+    const {name, value} = e.target;
+    setUser(user => ({...user, [name]: value}));
+    console.log(user);
+  },[user])
 
-
-
-  render() {
+  const handleSumbit = useCallback( e => {
+    e.preventDefault();
+    const userData = {
+      firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    dateofbirth: user.dateofbirth,
+    password: user.password,
+    passwordconfirm: user.passwordconfirm
+    };
+    axios.post("https://localhost:3000/api/register", userData)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+  },[user])
+  
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={handleSumbit}>
         <h1>Sign Up For An Account</h1>
-
         <label>First Name</label>
-        <input
-          name='firstname'
-          placeholder='Firstname'
-          value={this.state.username}
-          onChange={this.handleChange}
-          /><br/>
+        <input name='firstname' placeholder='Firstname' value={user.firstname} onChange={handleChange} /><br/>
         <label>Last Name</label>
-        <input
-          name='lastname'
-          placeholder='Lastname'
-          value={this.state.username}
-          onChange={this.handleChange}
-          /><br/>
+        <input name='lastname' placeholder='Lastname' value={user.lastname} onChange={handleChange} /><br/>
         <label>Email</label>
-        <input
-          name='email'
-          placeholder='Email'
-          value={this.state.username}
-          onChange={this.handleChange}
-          /><br/>
+        <input name='email' placeholder='Email' value={user.email} onChange={handleChange} /><br/>
         <label>Date Of Birth</label>
-        <input
-          type='date'
-          name='dateOfBirth'
-          placeholder='Date Of Birth'
-          value={this.state.username}
-          onChange={this.handleChange}
-          /><br/>
+        <input type='date' name='dateofbirth' placeholder='Date Of Birth' value={user.dateofbirth} onChange={handleChange} /><br/>
         <label>Password</label>
-        <input
-          type='password'
-          name='password'
-          placeholder='Password'
-          value={this.state.password}
-          onChange={this.handleChange}
-          /><br/>
+        <input type='password' name='password' placeholder='Password' value={user.password} onChange={handleChange} /><br/>
         <label>Password Confirm</label>
-        <input
-          type='password'
-          name='Passwordconfirm'
-          placeholder='Password Confirm'
-          value={this.state.password}
-          onChange={this.handleChange}
-          /><br/>
+        <input type='password' name='passwordconfirm' placeholder='Password Confirm' value={user.passwordconfirm} onChange={handleChange} /><br/>
         <input type='submit'/>
       </form>
     )
-  }
 }
-
 
 export default Register;
