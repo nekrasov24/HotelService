@@ -27,7 +27,7 @@ function Register() {
     password: user.password,
     passwordconfirm: user.passwordconfirm
     };
-    axios.post("https://localhost:3000/api/register", userData)
+    axios.post("https://localhost:44344/api/register", userData)
     .then(res => console.log(res))
     .catch(err => console.log(err));
   },[user])

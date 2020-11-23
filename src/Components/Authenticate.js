@@ -21,10 +21,10 @@ function Authenticate() {
       e.preventDefault();
       const userData = {
         firstname: loginUser.firstname,
-      email: loginUser.email,
-      password: loginUser.password
+        email: loginUser.email,
+        password: loginUser.password
       };
-      axios.post("/api/authenticate", userData)
+      axios.post("https://localhost:44344/api/authenticate", userData)
     }, [loginUser]);
 
     return (
