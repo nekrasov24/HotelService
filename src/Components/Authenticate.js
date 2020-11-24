@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import axios from 'axios';
+import { createBrowserHistory } from "history";
 
 function Authenticate() {
     const [loginUser, setloginUser] = useState({
@@ -17,15 +18,19 @@ function Authenticate() {
         [loginUser],
     );
 
+    const history = createBrowserHistory();
     const handleSumbit = useCallback( e => {
-      e.preventDefault();
+
       const userData = {
         firstname: loginUser.firstname,
         email: loginUser.email,
         password: loginUser.password
       };
       axios.post("https://localhost:44344/api/authenticate", userData)
-    }, [loginUser]);
+      .then(res => console.log(res))
+    .catch(err => console.log(err));
+      history.push('/Welcome');
+    }, [loginUser, history])
 
     return (
         <form onSubmit={handleSumbit}>

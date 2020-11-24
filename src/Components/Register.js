@@ -1,5 +1,8 @@
 import React, {useState, useCallback} from 'react';
 import axios from "axios";
+import { createBrowserHistory } from "history";
+
+
 
 function Register() {
   const [user, setUser] = useState({
@@ -17,7 +20,9 @@ function Register() {
     console.log(user);
   },[user])
 
-  const handleSumbit = useCallback( e => {
+  const history = createBrowserHistory();
+
+  /*const handleSumbit = useCallback( e => {
     e.preventDefault();
     const userData = {
       firstname: user.firstname,
@@ -30,7 +35,23 @@ function Register() {
     axios.post("https://localhost:44344/api/register", userData)
     .then(res => console.log(res))
     .catch(err => console.log(err));
-  },[user])
+  },[user])*/
+
+  const handleSumbit = useCallback( e => {
+
+    const userData = {
+      firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    dateofbirth: user.dateofbirth,
+    password: user.password,
+    passwordconfirm: user.passwordconfirm
+    };
+    axios.post("https://localhost:44344/api/register", userData)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+    history.push('/Welcome');
+  },[user, history])
   
     return (
       <form onSubmit={handleSumbit}>
