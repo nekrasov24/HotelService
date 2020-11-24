@@ -9,6 +9,8 @@ function Welcome() {
             </div>
             <div>
                 <a href="/register">Reg</a>
+                <br/>
+                <a href="/authenticate">Login</a>
             </div>
         </div>
     )

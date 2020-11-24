@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import axios from 'axios';
-import { createBrowserHistory } from "history";
+import { SetToken } from 'Services/LocalStorage';
+import { useHistory } from 'react-router-dom';
 
 function Authenticate() {
+    const history = useHistory();
     const [loginUser, setloginUser] = useState({
         firstname: '',
         email: '',
@@ -18,19 +20,26 @@ function Authenticate() {
         [loginUser],
     );
 
-    const history = createBrowserHistory();
-    const handleSumbit = useCallback( e => {
+    const handleSumbit = useCallback(
+        (e) => {
+            e.preventDefault();
+            const userData = {
+                firstname: loginUser.firstname,
+                email: loginUser.email,
+                password: loginUser.password,
+            };
+            axios
+                .post('https://localhost:44344/api/authenticate', userData)
+                .then((res) => {
+                    SetToken(res);
+                    console.log(res);
+                    history.push('/Welcome');
+                })
+                .catch((err) => console.log(err));
 
-      const userData = {
-        firstname: loginUser.firstname,
-        email: loginUser.email,
-        password: loginUser.password
-      };
-      axios.post("https://localhost:44344/api/authenticate", userData)
-      .then(res => console.log(res))
-    .catch(err => console.log(err));
-      history.push('/Welcome');
-    }, [loginUser, history])
+        },
+        [loginUser, history],
+    );
 
     return (
         <form onSubmit={handleSumbit}>
