@@ -1,16 +1,21 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
+import {maindivwelcome} from 'Styles/WelcomeStyle';
 
 function Welcome() {
+
     return (
-        <div>
+        <div className={maindivwelcome}>
             <div>
-            <h3>Welcome</h3>
-            <br/>
-            </div>
-            <div>
-                <a href="/register">Reg</a>
+                <h3>Welcome</h3>
                 <br/>
-                <a href="/authenticate">Login</a>
+            </div>
+            <div className="login-div">
+                <Link to="/register">Reg</Link>
+            </div>
+            <br/>
+            <div className="login-div">
+                <Link to="/authenticate">Login</Link>
             </div>
         </div>
     )
