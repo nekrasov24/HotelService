@@ -60,7 +60,7 @@ function Register() {
             return false;
         }
 
-        if(user.password.length >= 4) {            
+        if(user.password.length <= 4) {            
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
             return false;
         }
@@ -98,9 +98,9 @@ function Register() {
             axios
                 .post('https://localhost:44344/api/register', userData)
                 .then((res) => {
-                  SetToken(res);  
+                  SetToken(res.data);  
                   console.log(res);
-                    history.push('/Welcome');
+                    history.push('/HomePage');
                     
                 })
                 .catch((err) => console.log(err));

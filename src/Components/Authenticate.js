@@ -39,7 +39,7 @@ function Authenticate() {
             return false;
         }
 
-        if(loginUser.password.length >= 4) {            
+        if(loginUser.password.length <= 4) {            
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
             return false;
         }
@@ -72,7 +72,7 @@ function Authenticate() {
                 .then((res) => {
                     SetToken(res.data);
                     console.log(res);
-                    history.push('/Welcome');
+                    history.push('/HomePage');
                 })
                 .catch((err) => console.log(err));
         },
