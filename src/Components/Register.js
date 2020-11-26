@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { SetToken } from 'Services/LocalStorage';
+import 'Styles/RegisterStyle.css';
 
 function Register() {
     const history = useHistory();
@@ -14,6 +15,65 @@ function Register() {
         passwordconfirm: '',
     });
 
+    const [formErrors, setformErrors] = useState({
+        firstname: '',
+        lastname: '',
+        email: '',
+        dateofbirth: '',
+        password: '',
+        passwordconfirm: '',
+    });
+  
+    const validate = useCallback( () => {
+        if(user.firstname==null) {
+            setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
+            return false;
+        }
+
+        if(user.lastname==null) {
+            setformErrors((formErrors) => ({ ...formErrors, lastname: 'Last Name is required' }));
+            return false;
+        }
+        
+        if(user.email==null) {
+            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is required' }));
+            return false;
+        }
+
+        if(user.dateofbirth==null) {
+            setformErrors((formErrors) => ({ ...formErrors, dateofbirth: 'Date of Birth is required' }));
+            return false;
+        }
+
+        if(user.password==null) {
+            setformErrors((formErrors) => ({ ...formErrors, password: 'Password is required' }));
+            return false;
+        }
+
+        if(user.passwordconfirm==null) {
+            setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Password is required' }));
+            return false;
+        }
+
+        if(!user.email.includes('@')) {
+            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is incorrect' }));
+            return false;
+        }
+
+        if(user.password.length >= 4) {            
+            setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
+            return false;
+        }
+
+        if(user.password !== user.passwordconfirm) {            
+            setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Passwords don t match' }));
+            return false;
+        }
+        return true;
+    },
+    [user],
+    );
+
     const handleChange = useCallback(
         (e) => {
             const { name, value } = e.target;
@@ -25,6 +85,7 @@ function Register() {
 
     const handleSumbit = useCallback(
         (e) => {
+            validate();
             e.preventDefault();
             const userData = {
                 firstname: user.firstname,
@@ -44,60 +105,66 @@ function Register() {
                 })
                 .catch((err) => console.log(err));
         },
-        [user, history],
+        [user, history, validate],
     );
 
     return (
-        <form onSubmit={handleSumbit}>
-            <h1>Sign Up For An Account</h1>
-            <label>First Name</label>
-            <input
-                name="firstname"
-                placeholder="Firstname"
-                value={user.firstname}
+        <div className="registername">
+            <form className="formregister" onSubmit={handleSumbit}>
+                <h3 className="formheaderreg">Register</h3>                
+                <input className="inputfirstnamereg"
+                    name="firstname"
+                    placeholder="Firstname"
+                    value={user.firstname}
+                    onChange={handleChange}
+                />
+                {formErrors.firstname && <span>{formErrors.firstname}</span>}
+                <br />               
+                <input className="inputfirstnamereg"
+                    name="lastname"
+                    placeholder="Lastname"
+                    value={user.lastname}
+                    onChange={handleChange}
+                />
+                {formErrors.lastname && <span>{formErrors.lastname}</span>}
+                <br />                
+                <input className="inputfirstnamereg"
+                name="email" placeholder="Email"
+                value={user.email}
                 onChange={handleChange}
-            />
-            <br />
-            <label>Last Name</label>
-            <input
-                name="lastname"
-                placeholder="Lastname"
-                value={user.lastname}
-                onChange={handleChange}
-            />
-            <br />
-            <label>Email</label>
-            <input name="email" placeholder="Email" value={user.email} onChange={handleChange} />
-            <br />
-            <label>Date Of Birth</label>
-            <input
-                type="date"
-                name="dateofbirth"
-                placeholder="Date Of Birth"
-                value={user.dateofbirth}
-                onChange={handleChange}
-            />
-            <br />
-            <label>Password</label>
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={user.password}
-                onChange={handleChange}
-            />
-            <br />
-            <label>Password Confirm</label>
-            <input
-                type="password"
-                name="passwordconfirm"
-                placeholder="Password Confirm"
-                value={user.passwordconfirm}
-                onChange={handleChange}
-            />
-            <br />
-            <input type="submit" />
-        </form>
+                />
+                {formErrors.email && <span>{formErrors.email}</span>}
+                <br />              
+                <input className="inputfirstnamereg"
+                    type="date"
+                    name="dateofbirth"
+                    placeholder="Date Of Birth"
+                    value={user.dateofbirth}
+                    onChange={handleChange}
+                />
+                {formErrors.dateofbirth && <span>{formErrors.dateofbirth}</span>}
+                <br />                
+                <input className="inputfirstnamereg"
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={user.password}
+                    onChange={handleChange}
+                />
+                {formErrors.password && <span>{formErrors.password}</span>}
+                <br />
+                <input className="inputfirstnamereg"
+                    type="password"
+                    name="passwordconfirm"
+                    placeholder="Password Confirm"
+                    value={user.passwordconfirm}
+                    onChange={handleChange}
+                />
+                {formErrors.passwordconfirm && <span>{formErrors.passwordconfirm}</span>}
+                <br />
+                <input className="inputfirstnamereg" type="submit" />
+            </form>
+        </div>
     );
 }
 
