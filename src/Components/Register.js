@@ -25,32 +25,32 @@ function Register() {
     });
   
     const validate = useCallback( () => {
-        if(user.firstname==null) {
+        if(!user.firstname) {
             setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
             return false;
         }
 
-        if(user.lastname==null) {
+        if(!user.lastname) {
             setformErrors((formErrors) => ({ ...formErrors, lastname: 'Last Name is required' }));
             return false;
         }
         
-        if(user.email==null) {
+        if(!user.email) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is required' }));
             return false;
         }
 
-        if(user.dateofbirth==null) {
+        if(!user.dateofbirth) {
             setformErrors((formErrors) => ({ ...formErrors, dateofbirth: 'Date of Birth is required' }));
             return false;
         }
 
-        if(user.password==null) {
+        if(!user.password) {
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is required' }));
             return false;
         }
 
-        if(user.passwordconfirm==null) {
+        if(!user.passwordconfirm) {
             setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Password is required' }));
             return false;
         }
@@ -60,7 +60,7 @@ function Register() {
             return false;
         }
 
-        if(user.password.length <= 4) {            
+        if(user.password.length < 4) {            
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
             return false;
         }
@@ -69,6 +69,8 @@ function Register() {
             setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Passwords don t match' }));
             return false;
         }
+
+        
         return true;
     },
     [user],

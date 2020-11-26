@@ -16,38 +16,40 @@ function Authenticate() {
         firstname: '',
         email: '',
         password: '',
+        err:'',
     });
-  
-    const validate = useCallback( () => {
-        if(loginUser.firstname==null) {
+
+    const validate = useCallback(() => {
+        if (!loginUser.firstname) {
             setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
             return false;
         }
-        
-        if(loginUser.email==null) {
-            setformErrors((formErrors) => ({ ...formErrors, firstname: 'Email is required' }));
+
+        if (!loginUser.email) {
+            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is required' }));
             return false;
         }
 
-        if(loginUser.password==null) {
-            setformErrors((formErrors) => ({ ...formErrors, firstname: 'Password is required' }));
+        if (!loginUser.password) {
+            setformErrors((formErrors) => ({ ...formErrors, password: 'Password is required' }));
             return false;
         }
 
-        if(!loginUser.email.includes('@')) {
+        if (!loginUser.email.includes('@')) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is incorrect' }));
             return false;
         }
 
-        if(loginUser.password.length <= 4) {            
+        if (loginUser.password.length < 4) {
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
             return false;
         }
-        return true;
-    },
-    [loginUser],
-    );
 
+
+        
+
+        return true;
+    }, [loginUser]);
 
     const handleChange = useCallback(
         (e) => {
@@ -71,10 +73,11 @@ function Authenticate() {
                 .post('https://localhost:44344/api/authenticate', userData)
                 .then((res) => {
                     SetToken(res.data);
-                    console.log(res);
+                    console.log(res.data);
                     history.push('/HomePage');
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => setformErrors((formErrors) => ({ ...formErrors,  err: 'ghghgggg' })));
+                
         },
         [loginUser, history, validate],
     );
@@ -83,7 +86,8 @@ function Authenticate() {
         <div className="authenticatename">
             <form className="formauthenticate" onSubmit={handleSumbit}>
                 <h3 className="formheaderauth">Login</h3>
-                <input className="inputfirstnameauth"
+                <input
+                    className="inputfirstnameauth"
                     name="firstname"
                     placeholder="Firstname"
                     value={loginUser.firstname}
@@ -91,7 +95,8 @@ function Authenticate() {
                 />
                 {formErrors.firstname && <span>{formErrors.firstname}</span>}
                 <br />
-                <input className="inputfirstnameauth"
+                <input
+                    className="inputfirstnameauth"
                     name="email"
                     placeholder="Email"
                     value={loginUser.email}
@@ -99,7 +104,8 @@ function Authenticate() {
                 />
                 {formErrors.email && <span>{formErrors.email}</span>}
                 <br />
-                <input className="inputfirstnameauth"
+                <input
+                    className="inputfirstnameauth"
                     type="password"
                     name="password"
                     placeholder="Password"
@@ -109,6 +115,7 @@ function Authenticate() {
                 {formErrors.password && <span>{formErrors.password}</span>}
                 <br />
                 <input className="inputfirstnameauth" type="submit" />
+                {formErrors.err && <span>{formErrors.err}</span>}
             </form>
         </div>
     );
