@@ -18,7 +18,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-
 const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -31,19 +30,16 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.secondary.main,
     },
     form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3),
+      },
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
   }));
 
-
-
 function Register() {
-    
-    
+       
     function Copyright() {
         return (
           <Typography variant="body2" color="textSecondary" align="center">
@@ -121,9 +117,7 @@ function Register() {
         if(user.password !== user.passwordconfirm) {            
             setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Passwords don t match' }));
             return false;
-        }
-
-        
+        }      
         return true;
     },
     [user],
@@ -158,15 +152,13 @@ function Register() {
                     history.push('/HomePage');
                     
                 })
-                .catch((err) => setformErrors((formErrors) => ({ ...formErrors,  err: 'ghghgggg' })));
+                .catch((err) => setformErrors((formErrors) => ({ ...formErrors,  err: 'User already exists' })));
         },
         [user, history, validate],
     );
 
     return (
         
-        
-
         <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
@@ -190,6 +182,7 @@ function Register() {
               autoFocus
               onChange={handleChange}
               value={user.firstname}
+              helperText={formErrors.firstname}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -204,6 +197,7 @@ function Register() {
                 autoFocus
                 onChange={handleChange}
                 value={user.lastname}
+                helperText={formErrors.lastname}
               />
             </Grid>
             <Grid item xs={12}>
@@ -217,6 +211,7 @@ function Register() {
                 autoComplete="email"
                 value={user.email}
                 onChange={handleChange}
+                helperText={formErrors.email}
               />
             </Grid>
             <Grid item xs={12}>
@@ -231,6 +226,7 @@ function Register() {
                 autoComplete="dateofbirth"
                 value={user.dateofbirth}
                 onChange={handleChange}
+                helperText={formErrors.dateofbirth}
               />
             </Grid>
             <Grid item xs={12}>
@@ -245,6 +241,7 @@ function Register() {
                 autoComplete="current-password"
                 onChange={handleChange}
                 value={user.password}
+                helperText={formErrors.err}
               />
             </Grid>
             <Grid item xs={12}>
@@ -259,6 +256,8 @@ function Register() {
                 autoComplete="current-password"
                 onChange={handleChange}
                 value={user.passwordconfirm}
+                helperText={formErrors.passwordconfirm}
+
               />
             </Grid>
             <Grid item xs={12}>
@@ -291,65 +290,7 @@ function Register() {
         <Copyright />
       </Box>
     </Container>
-        
-        
-        /*<div className="registername">
-            <form className="formregister" onSubmit={handleSumbit}>
-                <h3 className="formheaderreg">Register</h3>                
-                <input className="inputfirstnamereg"
-                    name="firstname"
-                    placeholder="Firstname"
-                    value={user.firstname}
-                    onChange={handleChange}
-                />
-                {formErrors.firstname && <span>{formErrors.firstname}</span>}
-                <br />               
-                <input className="inputfirstnamereg"
-                    name="lastname"
-                    placeholder="Lastname"
-                    value={user.lastname}
-                    onChange={handleChange}
-                />
-                {formErrors.lastname && <span>{formErrors.lastname}</span>}
-                <br />                
-                <input className="inputfirstnamereg"
-                name="email" placeholder="Email"
-                value={user.email}
-                onChange={handleChange}
-                />
-                {formErrors.email && <span>{formErrors.email}</span>}
-                <br />              
-                <input className="inputfirstnamereg"
-                    type="date"
-                    name="dateofbirth"
-                    placeholder="Date Of Birth"
-                    value={user.dateofbirth}
-                    onChange={handleChange}
-                />
-                {formErrors.dateofbirth && <span>{formErrors.dateofbirth}</span>}
-                <br />                
-                <input className="inputfirstnamereg"
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={user.password}
-                    onChange={handleChange}
-                />
-                {formErrors.password && <span>{formErrors.password}</span>}
-                <br />
-                <input className="inputfirstnamereg"
-                    type="password"
-                    name="passwordconfirm"
-                    placeholder="Password Confirm"
-                    value={user.passwordconfirm}
-                    onChange={handleChange}
-                />
-                {formErrors.passwordconfirm && <span>{formErrors.passwordconfirm}</span>}
-                <br />
-                <input className="inputfirstnamereg" type="submit" />
-                {formErrors.err && <span>{formErrors.err}</span>}
-            </form>
-        </div>*/
+
     );
 }
 
