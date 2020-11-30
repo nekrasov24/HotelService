@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
+
   }));
 
 function Register() {
@@ -64,6 +65,8 @@ function Register() {
         passwordconfirm: '',
     });
 
+    const regex2 = new RegExp(/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/);
+    
     const [formErrors, setformErrors] = useState({
         firstname: '',
         lastname: '',
@@ -71,9 +74,10 @@ function Register() {
         dateofbirth: '',
         password: '',
         passwordconfirm: '',
+        err:"",
     });
   
-    const validate = useCallback( () => {
+    const validate =  () => {
         if(!user.firstname) {
             setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
             return false;
@@ -100,12 +104,12 @@ function Register() {
         }
 
         if(!user.passwordconfirm) {
-            setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Password is required' }));
+            setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: 'Password Confirm is required' }));
             return false;
         }
 
-        if(!user.email.includes('@')) {
-            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is incorrect' }));
+        if(!regex2.test(user.email)) {
+            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is not valid' }));
             return false;
         }
 
@@ -119,9 +123,8 @@ function Register() {
             return false;
         }      
         return true;
-    },
-    [user],
-    );
+
+      };
 
     const handleChange = useCallback(
         (e) => {
@@ -132,10 +135,12 @@ function Register() {
         [user],
     );
 
-    const handleSumbit = useCallback(
+    const handleSumbit = 
         (e) => {
-            validate();
-            e.preventDefault();
+          e.preventDefault();  
+           
+            const result = validate();
+            if(result){
             const userData = {
                 firstname: user.firstname,
                 lastname: user.lastname,
@@ -152,10 +157,11 @@ function Register() {
                     history.push('/HomePage');
                     
                 })
-                .catch((err) => setformErrors((formErrors) => ({ ...formErrors,  err: 'User already exists' })));
-        },
-        [user, history, validate],
-    );
+                .catch((res) => setformErrors((formErrors) => ({ ...formErrors,  err: res.response.data })));
+              }
+         };
+
+ 
 
     return (
         
@@ -172,6 +178,7 @@ function Register() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
+              error={formErrors.firstname}
               variant="outlined"
               margin="normal"
               required
@@ -183,10 +190,13 @@ function Register() {
               onChange={handleChange}
               value={user.firstname}
               helperText={formErrors.firstname}
+ 
+
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                error={formErrors.lastname}
                 variant="outlined"
                 margin="normal"
                 required
@@ -202,6 +212,7 @@ function Register() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                error={formErrors.email}
                 variant="outlined"
                 required
                 fullWidth
@@ -216,6 +227,7 @@ function Register() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                error={formErrors.dateofbirth}
                 variant="outlined"
                 required
                 fullWidth
@@ -231,6 +243,7 @@ function Register() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                error={formErrors.err || formErrors.password}
                 variant="outlined"
                 required
                 fullWidth
@@ -241,11 +254,12 @@ function Register() {
                 autoComplete="current-password"
                 onChange={handleChange}
                 value={user.password}
-                helperText={formErrors.err}
+                helperText={formErrors.err || formErrors.password}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
+                error={formErrors.passwordconfirm}
                 variant="outlined"
                 required
                 fullWidth

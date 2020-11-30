@@ -16,42 +16,40 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-
 function Copyright() {
     return (
-      <Typography variant="body2" color="textSecondary" align="center">
-        {'Copyright © '}
-        <Link color="inherit" href="https://material-ui.com/">
-          Your Website
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
+        <Typography variant="body2" color="textSecondary" align="center">
+            {'Copyright © '}
+            <Link color="inherit" href="https://material-ui.com/">
+                Your Website
+            </Link>{' '}
+            {new Date().getFullYear()}
+            {'.'}
+        </Typography>
     );
-  }
+}
 
-  const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
     paper: {
-      marginTop: theme.spacing(8),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
     },
     form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
     },
     submit: {
-      margin: theme.spacing(3, 0, 2),
+        margin: theme.spacing(3, 0, 2),
     },
-  }));
+}));
 
 function Authenticate() {
-    
     const classes = useStyles();
     const history = useHistory();
     const [loginUser, setloginUser] = useState({
@@ -60,40 +58,55 @@ function Authenticate() {
         password: '',
     });
 
+    const regex1 = new RegExp(/^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
     const [formErrors, setformErrors] = useState({
         firstname: '',
         email: '',
         password: '',
-        err:'',
+        err: '',
     });
 
-    const validate = useCallback(() => {
+    const validate = () => {
+      let isValid = true;
+
         if (!loginUser.firstname) {
             setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
-            return false;
+            isValid =  false;
+        } else {
+          setformErrors((formErrors) => ({ ...formErrors, firstname: null }));
         }
 
         if (!loginUser.email) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is required' }));
-            return false;
+            isValid =  false;
+        } else{
+          setformErrors((formErrors) => ({ ...formErrors, email: '' }));
         }
 
         if (!loginUser.password) {
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is required' }));
-            return false;
+            isValid =  false;
+        } else{
+          setformErrors((formErrors) => ({ ...formErrors, password: '' }));
         }
 
-        if (!loginUser.email.includes('@')) {
-            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is incorrect' }));
-            return false;
+        
+        if (!regex1.test(loginUser.email)) {
+            setformErrors((formErrors) => ({ ...formErrors, email: 'Email is not valid' }));
+            isValid =  false;
+        } else{
+          setformErrors((formErrors) => ({ ...formErrors, email: '' }));
         }
 
         if (loginUser.password.length < 4) {
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
-            return false;
+            isValid = false;
+        } else{
+          setformErrors((formErrors) => ({ ...formErrors, password: '' }));
         }
-        return true;
-    }, [loginUser]);
+        return isValid;
+    };
 
     const handleChange = useCallback(
         (e) => {
@@ -104,100 +117,111 @@ function Authenticate() {
         [loginUser],
     );
 
-    const handleSumbit = useCallback(
-        (e) => {
-            validate();
-            e.preventDefault();
-            const userData = {
-                firstname: loginUser.firstname,
-                email: loginUser.email,
-                password: loginUser.password,
-            };
-            axios
-                .post('https://localhost:44344/api/authenticate', userData)
-                .then((res) => {
-                    SetToken(res.data);
-                    console.log(res.data);
-                    history.push('/HomePage');
-                })
-                .catch((err) => setformErrors((formErrors) => ({ ...formErrors,  err: 'Email or password is incorrect' })));
-                
-        },
-        [loginUser, history, validate],
-    );
+    const handleSumbit = (e) => {
+        e.preventDefault();
 
-    return (       
-        
+        const result = validate();
+        if(result){
+          const userData = {
+            firstname: loginUser.firstname,
+            email: loginUser.email,
+            password: loginUser.password,
+        };
+        axios
+            .post('https://localhost:44344/api/authenticate', userData)
+            .then((res) => {
+                SetToken(res.data);
+                console.log(res);
+                history.push('/HomePage');
+            })
+            .catch((res) => {
+              
+              console.log(res)
+              setformErrors((formErrors) => ({ ...formErrors, err: res.response.data }))});
+        }        
+    };
+
+    //(res.response && res.response.data &&
+      //res.response.data.message) || res.message || res.toString()
+      //console.log(JSON.stringify(res))
+      ///^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/
+      ///^[a-zA-Z0-9]+@+[a-zA-Z0-9]+.+[A-z]/
+
+    return (
         <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Log in
-        </Typography>
-        <form className={classes.form} noValidate>
-        <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="firstname"
-            label="First Name"
-            name="firstname"         
-            autoFocus
-            onChange={handleChange}
-            value={loginUser.firstname}
-            helperText={formErrors.firstname}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"            
-            autoFocus
-            onChange={handleChange}
-            value={loginUser.email}
-            helperText={formErrors.email}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"        
-            onChange={handleChange}
-            value={loginUser.password}
-            helperText={formErrors.err}                    
-          />
+            <CssBaseline />
+            <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Log in
+                </Typography>
+                <form className={classes.form} noValidate>
+                    <TextField
+                        error={formErrors.firstname}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="firstname"
+                        label="First Name"
+                        name="firstname"
+                        autoFocus
+                        onChange={handleChange}
+                        value={loginUser.firstname}
+                        helperText={formErrors.firstname}
+                    />
+                    <TextField
+                        error={formErrors.email}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoFocus
+                        onChange={handleChange}
+                        value={loginUser.email}
+                        helperText={formErrors.email}
+                    />
+                    <TextField
+                        error={formErrors.err || formErrors.password}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        onChange={handleChange}
+                        value={loginUser.password}
+                        helperText={formErrors.err || formErrors.password}
+                        
+                    />
 
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={handleSumbit}
-          >
-            Sign In
-          </Button>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>               
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={handleSumbit}
+                    >
+                        Sign In
+                    </Button>
+                </form>
+            </div>
+            <Box mt={8}>
+                <Copyright />
+            </Box>
+        </Container>
     );
 }
 
