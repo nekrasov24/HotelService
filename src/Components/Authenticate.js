@@ -15,6 +15,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Alert from '@material-ui/lab/Alert';
 
 function Copyright() {
     return (
@@ -99,12 +100,7 @@ function Authenticate() {
           setformErrors((formErrors) => ({ ...formErrors, email: '' }));
         }
 
-        if (loginUser.password.length < 4) {
-            setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
-            isValid = false;
-        } else{
-          setformErrors((formErrors) => ({ ...formErrors, password: '' }));
-        }
+        
         return isValid;
     };
 
@@ -122,6 +118,8 @@ function Authenticate() {
 
         const result = validate();
         if(result){
+
+            setformErrors((formErrors) => ({ ...formErrors, err: null }));
           const userData = {
             firstname: loginUser.firstname,
             email: loginUser.email,
@@ -141,11 +139,7 @@ function Authenticate() {
         }        
     };
 
-    //(res.response && res.response.data &&
-      //res.response.data.message) || res.message || res.toString()
-      //console.log(JSON.stringify(res))
-      ///^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/
-      ///^[a-zA-Z0-9]+@+[a-zA-Z0-9]+.+[A-z]/
+
 
     return (
         <Container component="main" maxWidth="xs">
@@ -158,6 +152,7 @@ function Authenticate() {
                     Log in
                 </Typography>
                 <form className={classes.form} noValidate>
+                {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
                     <TextField
                         error={formErrors.firstname}
                         variant="outlined"
@@ -187,7 +182,7 @@ function Authenticate() {
                         helperText={formErrors.email}
                     />
                     <TextField
-                        error={formErrors.err || formErrors.password}
+                        error={formErrors.password}
                         variant="outlined"
                         margin="normal"
                         required
@@ -198,7 +193,7 @@ function Authenticate() {
                         id="password"
                         onChange={handleChange}
                         value={loginUser.password}
-                        helperText={formErrors.err || formErrors.password}
+                        helperText={formErrors.password}
                         
                     />
 
