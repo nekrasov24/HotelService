@@ -17,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -52,6 +53,7 @@ function Register() {
         );
     }
 
+    const { enqueueSnackbar } = useSnackbar();
     const classes = useStyles();
     const history = useHistory();
     const [user, setUser] = useState({
@@ -184,6 +186,7 @@ function Register() {
                     SetToken(res.data);
                     console.log(res);
                     history.push('/HomePage');
+                    enqueueSnackbar('You have successfully logged in!', { variant: "success" })
                 })
                 .catch((res) => {
                     console.log(res);
@@ -259,7 +262,7 @@ function Register() {
                                 required
                                 fullWidth
                                 id="email"
-                                label="Date Of Birth"
+                                //label="Date Of Birth"
                                 name="dateofbirth"
                                 type="date"
                                 autoComplete="dateofbirth"

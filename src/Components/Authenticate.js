@@ -16,6 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
+import { useSnackbar } from 'notistack';
+
 
 function Copyright() {
     return (
@@ -59,6 +61,7 @@ function Authenticate() {
         password: '',
     });
 
+    const { enqueueSnackbar } = useSnackbar();
     const regex1 = new RegExp(/^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
     const [formErrors, setformErrors] = useState({
@@ -131,6 +134,7 @@ function Authenticate() {
                 SetToken(res.data);
                 console.log(res);
                 history.push('/HomePage');
+                enqueueSnackbar('You have successfully logged in!', { variant: "success" })
             })
             .catch((res) => {
               

@@ -2,13 +2,14 @@ import 'Styles/WelcomeStyle.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Box, Container, Toolbar, Typography } from '@material-ui/core';
 import 'Styles/RegisterStyle.css';
-
+import axios from 'axios';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Grid from '@material-ui/core/Grid';
 
 
 import 'Styles/RegisterStyle.css';
+import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,6 +45,17 @@ const useStyles = makeStyles((theme) => ({
 function Profile() {
     
     const classes = useStyles();
+
+    useEffect(() => {
+      axios
+            .get('https://localhost:44344/api/getprofile/')
+            .then((res) => {
+
+                console.log(res);
+
+            });
+
+    }, []);
 
     return (
 
