@@ -65,7 +65,7 @@ function Register() {
         passwordconfirm: '',
     });
 
-    const regex2 = new RegExp(
+    const regex = new RegExp(
         /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     );
 
@@ -130,7 +130,7 @@ function Register() {
             setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: '' }));
         }
 
-        if (!regex2.test(user.email)) {
+        if (!regex.test(user.email)) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is not valid' }));
             isValid = false;
         } else {
@@ -262,7 +262,7 @@ function Register() {
                                 required
                                 fullWidth
                                 id="email"
-                                //label="Date Of Birth"
+
                                 name="dateofbirth"
                                 type="date"
                                 autoComplete="dateofbirth"

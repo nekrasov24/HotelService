@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%',
         marginTop: theme.spacing(1),
     },
     submit: {
@@ -56,16 +56,14 @@ function Authenticate() {
     const classes = useStyles();
     const history = useHistory();
     const [loginUser, setloginUser] = useState({
-        firstname: '',
         email: '',
         password: '',
     });
 
     const { enqueueSnackbar } = useSnackbar();
-    const regex1 = new RegExp(/^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    const regex = new RegExp(/^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
     const [formErrors, setformErrors] = useState({
-        firstname: '',
         email: '',
         password: '',
         err: '',
@@ -73,13 +71,6 @@ function Authenticate() {
 
     const validate = () => {
       let isValid = true;
-
-        if (!loginUser.firstname) {
-            setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
-            isValid =  false;
-        } else {
-          setformErrors((formErrors) => ({ ...formErrors, firstname: null }));
-        }
 
         if (!loginUser.email) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is required' }));
@@ -96,7 +87,7 @@ function Authenticate() {
         }
 
         
-        if (!regex1.test(loginUser.email)) {
+        if (!regex.test(loginUser.email)) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is not valid' }));
             isValid =  false;
         } else{
@@ -124,7 +115,6 @@ function Authenticate() {
 
             setformErrors((formErrors) => ({ ...formErrors, err: null }));
           const userData = {
-            firstname: loginUser.firstname,
             email: loginUser.email,
             password: loginUser.password,
         };
@@ -157,20 +147,6 @@ function Authenticate() {
                 </Typography>
                 <form className={classes.form} noValidate>
                 {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                    <TextField
-                        error={formErrors.firstname}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="firstname"
-                        label="First Name"
-                        name="firstname"
-                        autoFocus
-                        onChange={handleChange}
-                        value={loginUser.firstname}
-                        helperText={formErrors.firstname}
-                    />
                     <TextField
                         error={formErrors.email}
                         variant="outlined"
