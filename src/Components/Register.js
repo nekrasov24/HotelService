@@ -19,7 +19,7 @@ import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
-import jwt_decode from "jwt-decode";
+import jwt_decode from 'jwt-decode';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -186,14 +186,12 @@ function Register() {
             axios
                 .post('https://localhost:44344/api/register', userData)
                 .then((res) => {
-                    SetToken(res.data);
-                    var token = GetToken();
+                    const token = res.data;
+                    SetToken(token);
                     var decodeToken = jwt_decode(token);
-                    _AuthContext.setUserData(decodeToken);
-                    console.log(res);
+                    _AuthContext.setUserData(decodeToken, token);
                     history.push('/HomePage');
-                    enqueueSnackbar('You have successfully logged in!', { variant: "success" })
-
+                    enqueueSnackbar('You have successfully logged in!', { variant: 'success' });
                 })
                 .catch((res) => {
                     console.log(res);
@@ -213,8 +211,8 @@ function Register() {
                     Sign up
                 </Typography>
                 <form className={classes.form} noValidate>
-                {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                    <Grid container spacing={2}>                       
+                    {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                    <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 error={formErrors.firstname}
@@ -269,7 +267,6 @@ function Register() {
                                 required
                                 fullWidth
                                 id="email"
-
                                 name="dateofbirth"
                                 type="date"
                                 autoComplete="dateofbirth"

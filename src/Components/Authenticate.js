@@ -18,8 +18,7 @@ import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
-import jwt_decode from "jwt-decode";
-
+import jwt_decode from 'jwt-decode';
 
 function Copyright() {
     return (
@@ -55,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Authenticate() {
-
     const _AuthContext = useContext(AuthContext);
 
     const classes = useStyles();
@@ -66,7 +64,9 @@ function Authenticate() {
     });
 
     const { enqueueSnackbar } = useSnackbar();
-    const regex = new RegExp(/^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    const regex = new RegExp(
+        /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    );
 
     const [formErrors, setformErrors] = useState({
         email: '',
@@ -75,31 +75,29 @@ function Authenticate() {
     });
 
     const validate = () => {
-      let isValid = true;
+        let isValid = true;
 
         if (!loginUser.email) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is required' }));
-            isValid =  false;
-        } else{
-          setformErrors((formErrors) => ({ ...formErrors, email: '' }));
+            isValid = false;
+        } else {
+            setformErrors((formErrors) => ({ ...formErrors, email: '' }));
         }
 
         if (!loginUser.password) {
             setformErrors((formErrors) => ({ ...formErrors, password: 'Password is required' }));
-            isValid =  false;
-        } else{
-          setformErrors((formErrors) => ({ ...formErrors, password: '' }));
+            isValid = false;
+        } else {
+            setformErrors((formErrors) => ({ ...formErrors, password: '' }));
         }
 
-        
         if (!regex.test(loginUser.email)) {
             setformErrors((formErrors) => ({ ...formErrors, email: 'Email is not valid' }));
-            isValid =  false;
-        } else{
-          setformErrors((formErrors) => ({ ...formErrors, email: '' }));
+            isValid = false;
+        } else {
+            setformErrors((formErrors) => ({ ...formErrors, email: '' }));
         }
 
-        
         return isValid;
     };
 
@@ -116,32 +114,28 @@ function Authenticate() {
         e.preventDefault();
 
         const result = validate();
-        if(result){
-
+        if (result) {
             setformErrors((formErrors) => ({ ...formErrors, err: null }));
-          const userData = {
-            email: loginUser.email,
-            password: loginUser.password,
-        };
-        axios
-            .post('https://localhost:44344/api/authenticate', userData)
-            .then((res) => {
-                SetToken(res.data);
-                var token = GetToken();
+            const userData = {
+                email: loginUser.email,
+                password: loginUser.password,
+            };
+            axios
+                .post('https://localhost:44344/api/authenticate', userData)
+                .then((res) => {
+                    const token = res.data;
+                    SetToken(token);
                     var decodeToken = jwt_decode(token);
-                    _AuthContext.setUserData(decodeToken);
-                console.log(res);
-                history.push('/HomePage');
-                enqueueSnackbar('You have successfully logged in!', { variant: "success" })
-            })
-            .catch((res) => {
-              
-              console.log(res)
-              setformErrors((formErrors) => ({ ...formErrors, err: res.response.data }))});
-        }        
+                    _AuthContext.setUserData(decodeToken, token);
+                    history.push('/HomePage');
+                    enqueueSnackbar('You have successfully logged in!', { variant: 'success' });
+                })
+                .catch((res) => {
+                    console.log(res);
+                    setformErrors((formErrors) => ({ ...formErrors, err: res.response.data }));
+                });
+        }
     };
-
-
 
     return (
         <Container component="main" maxWidth="xs">
@@ -154,7 +148,7 @@ function Authenticate() {
                     Log in
                 </Typography>
                 <form className={classes.form} noValidate>
-                {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                    {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
                     <TextField
                         error={formErrors.email}
                         variant="outlined"
@@ -182,7 +176,6 @@ function Authenticate() {
                         onChange={handleChange}
                         value={loginUser.password}
                         helperText={formErrors.password}
-                        
                     />
 
                     <FormControlLabel
