@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { SetToken } from 'Services/LocalStorage';
+import { GetToken, SetToken } from 'Services/LocalStorage';
 import 'Styles/RegisterStyle.css';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -18,6 +18,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
+import AuthContext from '../Contexts/AuthContext/AuthContext';
+import jwt_decode from "jwt-decode";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,6 +42,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Register() {
+    const _AuthContext = useContext(AuthContext);
+
     function Copyright() {
         return (
             <Typography variant="body2" color="textSecondary" align="center">
@@ -167,7 +171,6 @@ function Register() {
 
     const handleSumbit = (e) => {
         e.preventDefault();
-
         const result = validate();
         if (result) {
             setformErrors((formErrors) => ({ ...formErrors, err: null }));
@@ -184,9 +187,13 @@ function Register() {
                 .post('https://localhost:44344/api/register', userData)
                 .then((res) => {
                     SetToken(res.data);
+                    var token = GetToken();
+                    var decodeToken = jwt_decode(token);
+                    _AuthContext.setUserData(decodeToken);
                     console.log(res);
                     history.push('/HomePage');
                     enqueueSnackbar('You have successfully logged in!', { variant: "success" })
+
                 })
                 .catch((res) => {
                     console.log(res);

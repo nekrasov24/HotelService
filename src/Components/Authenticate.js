@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import axios from 'axios';
-import { SetToken } from 'Services/LocalStorage';
+import { SetToken, GetToken } from 'Services/LocalStorage';
 import { useHistory } from 'react-router-dom';
 import 'Styles/AuthenticateStyle.css';
 import Avatar from '@material-ui/core/Avatar';
@@ -17,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 import { useSnackbar } from 'notistack';
+import AuthContext from '../Contexts/AuthContext/AuthContext';
+import jwt_decode from "jwt-decode";
 
 
 function Copyright() {
@@ -53,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Authenticate() {
+
+    const _AuthContext = useContext(AuthContext);
+
     const classes = useStyles();
     const history = useHistory();
     const [loginUser, setloginUser] = useState({
@@ -122,6 +127,9 @@ function Authenticate() {
             .post('https://localhost:44344/api/authenticate', userData)
             .then((res) => {
                 SetToken(res.data);
+                var token = GetToken();
+                    var decodeToken = jwt_decode(token);
+                    _AuthContext.setUserData(decodeToken);
                 console.log(res);
                 history.push('/HomePage');
                 enqueueSnackbar('You have successfully logged in!', { variant: "success" })
