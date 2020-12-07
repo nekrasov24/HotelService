@@ -7,9 +7,9 @@ import AuthProviderWrapper from './Contexts/AuthContext/AuthProviderWrapper';
 
 ReactDOM.render(
     //<React.StrictMode>
-        <AuthProviderWrapper>
-            <App />
-        </AuthProviderWrapper>,
+    <AuthProviderWrapper>
+        <App />
+    </AuthProviderWrapper>,
     //</React.StrictMode>,
     document.getElementById('root'),
 );

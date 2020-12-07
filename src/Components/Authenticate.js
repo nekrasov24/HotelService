@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import axios from 'axios';
-import { SetToken, GetToken } from 'Services/LocalStorage';
+import { SetToken } from 'Services/LocalStorage';
 import { useHistory } from 'react-router-dom';
 import 'Styles/AuthenticateStyle.css';
 import Avatar from '@material-ui/core/Avatar';

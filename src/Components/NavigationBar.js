@@ -108,7 +108,7 @@ function NavigationBar() {
     }, [_AuthContext, logout, handleGetProfile, logInHandler, signUpHandler]);
 
     return (
-        <AppBar>
+        <AppBar position="sticky">
             <Container>
                 <Toolbar>{content}</Toolbar>
             </Container>

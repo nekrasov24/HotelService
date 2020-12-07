@@ -11,18 +11,23 @@ import NavigationBar from './Components/NavigationBar';
 import { useLocation } from 'react-router-dom';
 
 function Show({ children }) {
-    return { children };
+    const location = useLocation();
+
+    if (location.pathname === '/register' || location.pathname === '/authenticate') {
+        return null;
+    }
+    return children;
 }
 
 function App() {
-    const location = useLocation();
+    //const location = useLocation();
 
     return (
         <SnackbarProvider maxSnack={3}>
             <Router>
-                {(location.pathname === '/register' || location.pathname === '/authenticate') && (
+                <Show>
                     <NavigationBar />
-                )}
+                </Show>
                 <Switch>
                     <Route path="/homepage" component={HomePage} />
                     <Route path="/profile/:id" component={Profile} />
