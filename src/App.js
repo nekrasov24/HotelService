@@ -9,6 +9,9 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import NavigationBar from './Components/NavigationBar';
 import { useLocation } from 'react-router-dom';
+import AddRoom from './Components/AddRoom';
+import EditRoom from './Components/EditRoom';
+import DeleteRoom from './Components/DeleteRoom';
 
 function Show({ children }) {
     const location = useLocation();
@@ -33,6 +36,9 @@ function App() {
                     <Route path="/profile/:id" component={Profile} />
                     <Route path="/register" component={Register} />
                     <Route path="/authenticate" component={Authenticate} />
+                    <Route path="/addroom" component={AddRoom} />
+                    <Route path="/editroom" component={EditRoom} />
+                    <Route path="/deleteroom" component={DeleteRoom} />
                     <Route path="/" component={Welcome} />
                 </Switch>
             </Router>

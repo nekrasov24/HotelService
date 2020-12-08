@@ -5,6 +5,9 @@ import { AppBar, Box, Container, Toolbar, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,6 +29,56 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler }) {
             <Typography className={classes.title}>Hello</Typography>
             <Box mr={3}>
                 <span>{email}</span>
+                <Button
+                    variant="outlined"
+                    onClick={logoutHandler}
+                    color="inherit"
+                    className={classes.menuButton}
+                    href="/"
+                >
+                    Log Out
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={profileHandler}
+                    color="inherit"
+                    className={classes.menuButton}
+                    href="/profile"
+                >
+                    Profile
+                </Button>
+            </Box>
+        </>
+    );
+}
+
+function AdminLoggedInNavbar({ email, logoutHandler, profileHandler }) {
+    const classes = useStyles();
+
+    return (
+        <>
+            <Typography className={classes.title}>Hello</Typography>
+            <Box mr={3}>
+                <span>{email}</span>
+                <PopupState variant="popover" popupId="demo-popup-menu">
+                    {(popupState) => (
+                        <React.Fragment>
+                            <Button
+                                variant="outlined"
+                                color="inherit"
+                                className={classes.menuButton}
+                                {...bindTrigger(popupState)}
+                            >
+                                Administration
+                            </Button>
+                            <Menu {...bindMenu(popupState)}>
+                                <MenuItem href="/addroom">Add Room</MenuItem>
+                                <MenuItem href="/editroom">Edit Room</MenuItem>
+                                <MenuItem onClick={popupState.close}>Delite Room</MenuItem>
+                            </Menu>
+                        </React.Fragment>
+                    )}
+                </PopupState>
                 <Button
                     variant="outlined"
                     onClick={logoutHandler}
@@ -81,6 +134,14 @@ function NavigationBar() {
     const _AuthContext = useContext(AuthContext);
     const history = useHistory();
 
+    const isAdminLoggedIn = useMemo(() => {
+        if (_AuthContext.scope === 'Admin') {
+            return true;
+        } else {
+            return false;
+        }
+    }, [_AuthContext.scope]);
+
     const handleGetProfile = useCallback(() => {
         history.push('/Profile/frtrr');
     }, [history]);
@@ -98,14 +159,22 @@ function NavigationBar() {
     }, [history]);
 
     const content = useMemo(() => {
-        return _AuthContext.isLoggedIn
-            ? LoggedInNavbar({
-                  email: _AuthContext.email,
-                  logoutHandler: logout,
-                  profileHandler: handleGetProfile,
-              })
-            : AnonymousNavbar({ logInHandler, signUpHandler });
-    }, [_AuthContext, logout, handleGetProfile, logInHandler, signUpHandler]);
+        if (isAdminLoggedIn) {
+            return AdminLoggedInNavbar({
+                email: _AuthContext.email,
+                logoutHandler: logout,
+                profileHandler: handleGetProfile,
+            });
+        } else {
+            return _AuthContext.isLoggedIn
+                ? LoggedInNavbar({
+                      email: _AuthContext.email,
+                      logoutHandler: logout,
+                      profileHandler: handleGetProfile,
+                  })
+                : AnonymousNavbar({ logInHandler, signUpHandler });
+        }
+    }, [_AuthContext, logout, handleGetProfile, logInHandler, signUpHandler, isAdminLoggedIn]);
 
     return (
         <AppBar position="sticky">

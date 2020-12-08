@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import { GetToken, SetToken } from 'Services/LocalStorage';
+import { SetToken } from 'Services/LocalStorage';
 import 'Styles/RegisterStyle.css';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
