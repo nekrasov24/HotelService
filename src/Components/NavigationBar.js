@@ -8,6 +8,9 @@ import AuthContext from '../Contexts/AuthContext/AuthContext';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import DeleteRoom from './DeleteRoom';
+import AddRoom from './AddRoom';
+import EditRoom from './EditRoom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,9 +75,9 @@ function AdminLoggedInNavbar({ email, logoutHandler, profileHandler }) {
                                 Administration
                             </Button>
                             <Menu {...bindMenu(popupState)}>
-                                <MenuItem href="/addroom">Add Room</MenuItem>
-                                <MenuItem href="/editroom">Edit Room</MenuItem>
-                                <MenuItem onClick={popupState.close}>Delite Room</MenuItem>
+                                <MenuItem onClick={AddRoom}>Add Room</MenuItem>
+                                <MenuItem onClick={EditRoom}>Edit Room</MenuItem>
+                                <MenuItem onClick={DeleteRoom}>Delite Room</MenuItem>
                             </Menu>
                         </React.Fragment>
                     )}

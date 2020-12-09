@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { AuthProvider } from './AuthContext';
-import { SetToken, GetToken } from 'Services/LocalStorage';
+import { GetToken, RemoveToken } from 'Services/LocalStorage';
 import jwt_decode from 'jwt-decode';
 
 const initialSate = {
@@ -16,7 +16,7 @@ export default function AuthProviderWrapper({ children }) {
     const [currentState, setCurrentState] = useState(initialSate);
 
     const clear = useCallback(() => {
-        SetToken();
+        RemoveToken();
         setCurrentState(initialSate);
     }, [setCurrentState]);
 

@@ -1,7 +1,7 @@
 import 'Styles/WelcomeStyle.css';
 
 function Welcome() {
-    return <div>WELCONEPAGE</div>;
+    return <div></div>;
 }
 
 export default Welcome;
