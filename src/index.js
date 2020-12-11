@@ -4,7 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AuthProviderWrapper from './Contexts/AuthContext/AuthProviderWrapper';
+import { configureAxios } from 'Services/Interceptor';
 
+configureAxios();
 ReactDOM.render(
     //<React.StrictMode>
     <AuthProviderWrapper>
