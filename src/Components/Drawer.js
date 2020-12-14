@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'flex-end',
         padding: '0 8px',
-        ...theme.mixins.toolbar,
+        //...theme.mixins.toolbar,
     },
 }));
 function Draw() {
@@ -21,7 +21,7 @@ function Draw() {
             <div className={classes.toolbarIcon}></div>
             <Divider />
             <List>{mainListItems}</List>
-            <Divider />
+
             <List>{secondaryListItems}</List>
         </Drawer>
     );

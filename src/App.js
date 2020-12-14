@@ -12,7 +12,6 @@ import { useLocation } from 'react-router-dom';
 import AddRoom from './Components/AddRoom';
 import EditRoom from './Components/EditRoom';
 import DeleteRoom from './Components/DeleteRoom';
-import Draw from './Components/Drawer';
 
 function Show({ children }) {
     const location = useLocation();
@@ -30,6 +29,7 @@ function App() {
                 <Show>
                     <NavigationBar />
                 </Show>
+
                 <Switch>
                     <Route path="/homepage" component={HomePage} />
                     <Route path="/profile/:id" component={Profile} />

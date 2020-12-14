@@ -65,14 +65,6 @@ function HomePage() {
             <React.Fragment>
                 <CssBaseline />
                 <main>
-                    {/* Hero unit */}
-                    <div className={classes.heroContent}>
-                        <Container maxWidth="sm">
-                            <div className={classes.heroButtons}>
-                                <Grid container spacing={2} justify="center"></Grid>
-                            </div>
-                        </Container>
-                    </div>
                     <Container className={classes.cardGrid} maxWidth="md">
                         {/* End hero unit */}
                         <Grid container spacing={4}>

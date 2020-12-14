@@ -9,7 +9,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -144,116 +143,108 @@ function AddRoom() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <Box
-                boxShadow={3}
-                bgcolor="background.paper"
-                m={1}
-                p={1}
-                style={{ width: '8rem', height: '5rem' }}
-            >
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Add new Room
-                    </Typography>
-                    <form className={classes.form} noValidate>
-                        {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                        <TextField
-                            error={formErrors.name}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="name"
-                            label="Name"
-                            name="name"
-                            autoFocus
-                            onChange={handleChange}
-                            value={addRequestModel.name}
-                            helperText={formErrors.name}
-                        />
-                        <TextField
-                            error={formErrors.number}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="number"
-                            label="Number"
-                            name="number"
-                            autoFocus
-                            onChange={handleChange}
-                            value={addRequestModel.number}
-                            helperText={formErrors.number}
-                        />
-                        <TextField
-                            error={formErrors.numberOfPeople}
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id="numberofpeople"
-                            label="Number Of People"
-                            name="numberofpeople"
-                            value={addRequestModel.numberOfPeople}
-                            onChange={handleChange}
-                            helperText={formErrors.numberOfPeople}
-                        />
-                        <TextField
-                            error={formErrors.priceForNight}
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id="pricefornight"
-                            name="pricefornight"
-                            label="Price For Night"
-                            value={addRequestModel.priceForNight}
-                            onChange={handleChange}
-                            helperText={formErrors.priceForNight}
-                        />
-                        <TextField
-                            error={formErrors.description}
-                            variant="outlined"
-                            required
-                            fullWidth
-                            name="description"
-                            label="Description"
-                            id="description"
-                            onChange={handleChange}
-                            value={addRequestModel.description}
-                            helperText={formErrors.description}
-                        />
-                        <TextField
-                            error={formErrors.roomType}
-                            variant="outlined"
-                            required
-                            fullWidth
-                            name="roomtype"
-                            label="Room Type"
-                            id="roomtype"
-                            onChange={handleChange}
-                            value={addRequestModel.roomType}
-                            helperText={formErrors.roomType}
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="allowExtraEmails" color="primary" />}
-                            label="I want to receive inspiration, marketing promotions and updates via email."
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={addRoom}
-                        >
-                            Add Room
-                        </Button>
-                    </form>
-                </div>
-            </Box>
+            <CssBaseline />
+            <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Add new Room
+                </Typography>
+                <form className={classes.form} noValidate>
+                    {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                    <TextField
+                        error={formErrors.name}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="name"
+                        label="Name"
+                        name="name"
+                        autoFocus
+                        onChange={handleChange}
+                        value={addRequestModel.name}
+                        helperText={formErrors.name}
+                    />
+                    <TextField
+                        error={formErrors.number}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="number"
+                        label="Number"
+                        name="number"
+                        autoFocus
+                        onChange={handleChange}
+                        value={addRequestModel.number}
+                        helperText={formErrors.number}
+                    />
+                    <TextField
+                        error={formErrors.numberOfPeople}
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="numberofpeople"
+                        label="Number Of People"
+                        name="numberofpeople"
+                        value={addRequestModel.numberOfPeople}
+                        onChange={handleChange}
+                        helperText={formErrors.numberOfPeople}
+                    />
+                    <TextField
+                        error={formErrors.priceForNight}
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="pricefornight"
+                        name="pricefornight"
+                        label="Price For Night"
+                        value={addRequestModel.priceForNight}
+                        onChange={handleChange}
+                        helperText={formErrors.priceForNight}
+                    />
+                    <TextField
+                        error={formErrors.description}
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="description"
+                        label="Description"
+                        id="description"
+                        onChange={handleChange}
+                        value={addRequestModel.description}
+                        helperText={formErrors.description}
+                    />
+                    <TextField
+                        error={formErrors.roomType}
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="roomtype"
+                        label="Room Type"
+                        id="roomtype"
+                        onChange={handleChange}
+                        value={addRequestModel.roomType}
+                        helperText={formErrors.roomType}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox value="allowExtraEmails" color="primary" />}
+                        label="I want to receive inspiration, marketing promotions and updates via email."
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={addRoom}
+                    >
+                        Add Room
+                    </Button>
+                </form>
+            </div>
         </Container>
     );
 }

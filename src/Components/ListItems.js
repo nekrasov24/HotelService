@@ -4,13 +4,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 export const mainListItems = (
     <div>
         <ListItem button>
-            <ListItemText primary="Add Room" />
+            <ListItemText primary="" />
         </ListItem>
         <ListItem button>
-            <ListItemText primary="Edit Room" />
+            <ListItemText primary="" />
         </ListItem>
         <ListItem button>
-            <ListItemText primary="Delete Room" />
+            <ListItemText primary="Get Profile" />
         </ListItem>
         <ListItem button>
             <ListItemText primary="" />

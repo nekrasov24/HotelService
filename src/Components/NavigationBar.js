@@ -5,12 +5,7 @@ import { AppBar, Box, Container, Toolbar, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import DeleteRoom from './DeleteRoom';
-import AddRoom from './AddRoom';
-import EditRoom from './EditRoom';
+import AdminDraw from './AdminDrawer';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,6 +16,10 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         flexGrow: 1,
+    },
+
+    disp: {
+        marginTop: 500,
     },
 }));
 
@@ -60,28 +59,11 @@ function AdminLoggedInNavbar({ email, logoutHandler, profileHandler }) {
 
     return (
         <>
+            <AdminDraw />
             <Typography className={classes.title}>Hello</Typography>
             <Box mr={3}>
                 <span>{email}</span>
-                <PopupState variant="popover" popupId="demo-popup-menu">
-                    {(popupState) => (
-                        <React.Fragment>
-                            <Button
-                                variant="outlined"
-                                color="inherit"
-                                className={classes.menuButton}
-                                {...bindTrigger(popupState)}
-                            >
-                                Administration
-                            </Button>
-                            <Menu {...bindMenu(popupState)}>
-                                <MenuItem onClick={AddRoom}>Add Room</MenuItem>
-                                <MenuItem onClick={EditRoom}>Edit Room</MenuItem>
-                                <MenuItem onClick={DeleteRoom}>Delite Room</MenuItem>
-                            </Menu>
-                        </React.Fragment>
-                    )}
-                </PopupState>
+
                 <Button
                     variant="outlined"
                     onClick={logoutHandler}
