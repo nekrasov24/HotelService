@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
 import AdminDraw from './AdminDrawer';
+import UserDraw from './Drawer';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,6 +29,7 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler }) {
 
     return (
         <>
+            <UserDraw />
             <Typography className={classes.title}>Hello</Typography>
             <Box mr={3}>
                 <span>{email}</span>
@@ -39,15 +41,6 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler }) {
                     href="/"
                 >
                     Log Out
-                </Button>
-                <Button
-                    variant="outlined"
-                    onClick={profileHandler}
-                    color="inherit"
-                    className={classes.menuButton}
-                    href="/profile"
-                >
-                    Profile
                 </Button>
             </Box>
         </>
@@ -72,15 +65,6 @@ function AdminLoggedInNavbar({ email, logoutHandler, profileHandler }) {
                     href="/"
                 >
                     Log Out
-                </Button>
-                <Button
-                    variant="outlined"
-                    onClick={profileHandler}
-                    color="inherit"
-                    className={classes.menuButton}
-                    href="/profile"
-                >
-                    Profile
                 </Button>
             </Box>
         </>

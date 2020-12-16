@@ -1,15 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import axios from 'axios';
-import { SetToken } from 'Services/LocalStorage';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
@@ -118,21 +113,16 @@ function AddRoom() {
 
             const addRoomData = {
                 name: addRequestModel.name,
-                number: addRequestModel.number,
-                numberOfPeople: addRequestModel.numberOfPeople,
-                priceForNight: addRequestModel.priceForNight,
+                number: Number(addRequestModel.number),
+                numberOfPeople: Number(addRequestModel.numberOfPeople),
+                priceForNight: Number(addRequestModel.priceForNight),
                 description: addRequestModel.description,
-                roomType: addRequestModel.roomType,
+                roomType: Number(addRequestModel.roomType),
             };
             axios
                 .post('https://localhost:44344/api/addroom', addRoomData)
                 .then((res) => {
-                    const token = res.data;
-                    SetToken(token);
-                    // var decodeToken = jwt_decode(token);
-                    // _AuthContext.setUserData(decodeToken, token);
                     history.push('/HomePage');
-                    //enqueueSnackbar('You have successfully logged in!', { variant: 'success' });
                 })
                 .catch((res) => {
                     console.log(res);
@@ -145,9 +135,6 @@ function AddRoom() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
                 <Typography component="h1" variant="h5">
                     Add new Room
                 </Typography>
@@ -177,6 +164,8 @@ function AddRoom() {
                         label="Number"
                         name="number"
                         autoFocus
+                        type="number"
+                        autoComplete="number"
                         onChange={handleChange}
                         value={addRequestModel.number}
                         helperText={formErrors.number}
@@ -184,11 +173,15 @@ function AddRoom() {
                     <TextField
                         error={formErrors.numberOfPeople}
                         variant="outlined"
+                        margin="normal"
                         required
                         fullWidth
-                        id="numberofpeople"
+                        id="numberOfPeople"
                         label="Number Of People"
-                        name="numberofpeople"
+                        name="numberOfPeople"
+                        autoFocus
+                        type="number"
+                        autoComplete="numberOfPeople"
                         value={addRequestModel.numberOfPeople}
                         onChange={handleChange}
                         helperText={formErrors.numberOfPeople}
@@ -196,11 +189,13 @@ function AddRoom() {
                     <TextField
                         error={formErrors.priceForNight}
                         variant="outlined"
+                        margin="normal"
                         required
                         fullWidth
-                        id="pricefornight"
-                        name="pricefornight"
+                        id="priceForNight"
+                        name="priceForNight"
                         label="Price For Night"
+                        type="number"
                         value={addRequestModel.priceForNight}
                         onChange={handleChange}
                         helperText={formErrors.priceForNight}
@@ -208,6 +203,7 @@ function AddRoom() {
                     <TextField
                         error={formErrors.description}
                         variant="outlined"
+                        margin="normal"
                         required
                         fullWidth
                         name="description"
@@ -220,18 +216,16 @@ function AddRoom() {
                     <TextField
                         error={formErrors.roomType}
                         variant="outlined"
+                        margin="normal"
                         required
                         fullWidth
-                        name="roomtype"
+                        name="roomType"
                         label="Room Type"
-                        id="roomtype"
+                        id="roomType"
+                        type="number"
                         onChange={handleChange}
                         value={addRequestModel.roomType}
                         helperText={formErrors.roomType}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox value="allowExtraEmails" color="primary" />}
-                        label="I want to receive inspiration, marketing promotions and updates via email."
                     />
                     <Button
                         type="submit"

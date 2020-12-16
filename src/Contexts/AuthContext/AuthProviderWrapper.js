@@ -6,9 +6,10 @@ import jwt_decode from 'jwt-decode';
 
 const initialSate = {
     token: '',
+    id: '',
     sub: '',
     email: '',
-    scope: '',
+    scope: null,
     isLoggedIn: false,
 };
 
@@ -24,6 +25,7 @@ export default function AuthProviderWrapper({ children }) {
         (propDecodedToken, propToken) => {
             setCurrentState(() => ({
                 token: propToken,
+                id: propDecodedToken.jti,
                 sub: propDecodedToken.sub,
                 email: propDecodedToken.email,
                 scope: propDecodedToken.scope,

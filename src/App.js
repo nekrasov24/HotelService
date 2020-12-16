@@ -12,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import AddRoom from './Components/AddRoom';
 import EditRoom from './Components/EditRoom';
 import DeleteRoom from './Components/DeleteRoom';
+import RoomManagement from './Components/RoomManagement';
 
 function Show({ children }) {
     const location = useLocation();
@@ -32,11 +33,13 @@ function App() {
 
                 <Switch>
                     <Route path="/homepage" component={HomePage} />
-                    <Route path="/profile/:id" component={Profile} />
+                    <Route path="/roomManagement" component={RoomManagement} />
+                    <Route path="/profile" component={Profile} />
                     <Route path="/register" component={Register} />
                     <Route path="/authenticate" component={Authenticate} />
                     <Route path="/addroom" component={AddRoom} />
-                    <Route path="/editroom" component={EditRoom} />
+                    <Route path="/edit-room/:roomId" component={EditRoom} />
+                    <Route path="/delete-room/:roomId" component={DeleteRoom} />
                     <Route path="/deleteroom" component={DeleteRoom} />
                     <Route path="/" component={Welcome} />
                 </Switch>

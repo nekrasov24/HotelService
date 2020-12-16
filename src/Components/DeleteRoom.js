@@ -1,17 +1,16 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { SetToken } from 'Services/LocalStorage';
-import { useHistory } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Alert from '@material-ui/lab/Alert';
+import { useHistory, useParams } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
+import { converterRoomType } from 'Services/ConverterRoomType';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,13 +35,26 @@ const useStyles = makeStyles((theme) => ({
 function DeleteRoom() {
     const classes = useStyles();
     const history = useHistory();
+    let { roomId } = useParams();
+    const [room, setRoom] = useState();
 
-    const [deleteRequestModel, setdeleteRequestModel] = useState({
+    const [deleteRequestModel, setDeleteRequestModel] = useState({
         id: '',
+        name: '',
+        number: '',
+        numberOfPeople: '',
+        priceForNight: '',
+        description: '',
+        roomType: '',
     });
-
     const [formErrors, setFormErrors] = useState({
         id: '',
+        name: '',
+        number: '',
+        numberOfPeople: '',
+        priceForNight: '',
+        description: '',
+        roomType: '',
     });
 
     const validate = () => {
@@ -58,32 +70,31 @@ function DeleteRoom() {
         return isValid;
     };
 
-    const handleChange = useCallback((e) => {
-        const { name, value } = e.target;
-        setdeleteRequestModel((currentDeleteRequestModel) => ({
-            ...currentDeleteRequestModel,
-            [name]: value,
-        }));
-    }, []);
+    useEffect(() => {
+        axios.get(`https://localhost:44344/api/rooms/${roomId}`).then((res) => {
+            setRoom(res.data);
+            setDeleteRequestModel({
+                id: res.data.id,
+                name: res.data.name,
+                number: res.data.number,
+                numberOfPeople: res.data.numberOfPeople,
+                priceForNight: res.data.priceForNight,
+                description: res.data.description,
+                roomType: res.data.roomType,
+            });
+            console.log(res);
+        });
+    }, [roomId]);
 
     const deleteRoom = (e) => {
         e.preventDefault();
         const result = validate();
         if (result) {
             setFormErrors((formErrors) => ({ ...formErrors, err: null }));
-
-            const userData = {
-                id: deleteRequestModel.id,
-            };
             axios
-                .post('https://localhost:44344/api/register', userData)
+                .delete(`https://localhost:44344/api/${roomId}`)
                 .then((res) => {
-                    const token = res.data;
-                    SetToken(token);
-                    //var decodeToken = jwt_decode(token);
-                    //_AuthContext.setUserData(decodeToken, token);
                     history.push('/HomePage');
-                    //enqueueSnackbar('You have successfully logged in!', { variant: 'success' });
                 })
                 .catch((res) => {
                     console.log(res);
@@ -93,44 +104,53 @@ function DeleteRoom() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Edit Room
-                </Typography>
-                <form className={classes.form} noValidate>
-                    {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                    <TextField
-                        error={formErrors.id}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="id"
-                        label="Id"
-                        name="id"
-                        onChange={handleChange}
-                        value={deleteRequestModel.id}
-                        helperText={formErrors.id}
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={deleteRoom}
-                    >
-                        Delete Room
-                    </Button>
-                </form>
-            </div>
-            <Box mt={5}></Box>
-        </Container>
+        <>
+            <React.Fragment>
+                <CssBaseline />
+                <main>
+                    <Container className={classes.cardGrid} component="main" maxWidth="md">
+                        {/* End hero unit */}
+                        <Grid
+                            container
+                            spacing={4}
+                            className={classes.form}
+                            justify="center"
+                            alignItems="center"
+                        >
+                            {room && (
+                                <Grid item xs={12} sm={6} md={4}>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                        Name: {room.name}
+                                    </Typography>
+                                    <Typography>Description: {room.description}</Typography>
+                                    <Typography>
+                                        {' '}
+                                        Number Of People: {room.numberOfPeople}
+                                    </Typography>
+                                    <Typography> Price For Night: {room.priceForNight}</Typography>
+                                    <Typography>
+                                        {' '}
+                                        Type: {converterRoomType(room.roomType)}
+                                    </Typography>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </Container>
+                </main>
+            </React.Fragment>
+
+            <Button
+                error={formErrors.name}
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={deleteRoom}
+                helperText={formErrors.name}
+            >
+                Delete Room
+            </Button>
+        </>
     );
 }
 

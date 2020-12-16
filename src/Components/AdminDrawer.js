@@ -1,54 +1,3 @@
-/*import List from '@material-ui/core/List';
-import { makeStyles } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-
-const useStyles = makeStyles(() => ({
-    tood: {
-        display: 'grid',
-        width: 240,
-    },
-}));
-function AdminDraw() {
-    const classes = useStyles();
-
-    return (
-        
-        <div className={classes.tood}>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                anchor="anchor"
-            >
-                <List>
-                    <ListItem button>
-                        <ListItemText href="/addroom" primary="Add Room" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemText primary="Edit Room" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemText primary="Delete Room" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemText primary="Get Profile" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemText primary="" />
-                    </ListItem>
-                </List>
-            </Drawer>
-        </div>
-    );
-}
-
-export default AdminDraw;*/
-
 import { useState, Fragment } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -73,7 +22,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function TemporaryDrawer() {
+export default function AdminDraw() {
     const classes = useStyles();
     const [state, setState] = useState({});
     const [abs, setAbs] = useState(['left']);
@@ -86,8 +35,12 @@ export default function TemporaryDrawer() {
         setState({ ...state, [anchor]: open });
     };
 
-    const push = () => {
-        history.push('/addroom');
+    const redirectRoomManagement = () => {
+        history.push('/roomManagement');
+        console.log();
+    };
+    const redirectProfile = () => {
+        history.push('/profile');
         console.log();
     };
 
@@ -101,26 +54,28 @@ export default function TemporaryDrawer() {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List>
-                {['AddRoom', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} onClick={push} />
-                    </ListItem>
+                {['RoomManagement'].map((text, index) => (
+                    <>
+                        <ListItem button key={text}>
+                            <ListItemIcon>
+                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            </ListItemIcon>
+                            <ListItemText primary={text} onClick={redirectRoomManagement} />
+                        </ListItem>
+                    </>
+                ))}
+                {['Profile'].map((text, index) => (
+                    <>
+                        <ListItem button key={text}>
+                            <ListItemIcon>
+                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            </ListItemIcon>
+                            <ListItemText primary={text} onClick={redirectProfile} />
+                        </ListItem>
+                    </>
                 ))}
             </List>
             <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
-                ))}
-            </List>
         </div>
     );
 

@@ -1,19 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { SetToken } from 'Services/LocalStorage';
-import { useHistory } from 'react-router-dom';
+
+import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
+import Grid from '@material-ui/core/Grid';
+import { converterRoomType } from 'Services/ConverterRoomType';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 function EditRoom() {
     const classes = useStyles();
     const history = useHistory();
+    const [room, setRoom] = useState();
     const [editRequestModel, setEditRequestModel] = useState({
         id: '',
         name: '',
@@ -57,6 +59,8 @@ function EditRoom() {
         description: '',
         roomType: '',
     });
+
+    let { roomId } = useParams();
 
     const validate = () => {
         let isValid = true;
@@ -120,6 +124,22 @@ function EditRoom() {
         }));
     }, []);
 
+    useEffect(() => {
+        axios.get(`https://localhost:44344/api/rooms/${roomId}`).then((res) => {
+            setRoom(res.data);
+            setEditRequestModel({
+                id: res.data.id,
+                name: res.data.name,
+                number: res.data.number,
+                numberOfPeople: res.data.numberOfPeople,
+                priceForNight: res.data.priceForNight,
+                description: res.data.description,
+                roomType: res.data.roomType,
+            });
+            console.log(res);
+        });
+    }, [roomId]);
+
     const editRoom = (e) => {
         e.preventDefault();
         const result = validate();
@@ -129,21 +149,16 @@ function EditRoom() {
             const editRoomData = {
                 id: editRequestModel.id,
                 name: editRequestModel.name,
-                number: editRequestModel.number,
-                numberOfPeople: editRequestModel.numberOfPeople,
-                priceForNight: editRequestModel.priceForNight,
+                number: Number(editRequestModel.number),
+                numberOfPeople: Number(editRequestModel.numberOfPeople),
+                priceForNight: Number(editRequestModel.priceForNight),
                 description: editRequestModel.description,
-                roomType: editRequestModel.roomType,
+                roomType: Number(editRequestModel.roomType),
             };
             axios
-                .post('https://localhost:44344/api/editroom', editRoomData)
+                .put('https://localhost:44344/api/editroom', editRoomData)
                 .then((res) => {
-                    const token = res.data;
-                    SetToken(token);
-                    //var decodeToken = jwt_decode(token);
-                    //_AuthContext.setUserData(decodeToken, token);
                     history.push('/HomePage');
-                    //enqueueSnackbar('You have successfully logged in!', { variant: 'success' });
                 })
                 .catch((res) => {
                     console.log(res);
@@ -153,131 +168,153 @@ function EditRoom() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Edit Room
-                </Typography>
-                <form className={classes.form} noValidate>
-                    {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                    <TextField
-                        error={formErrors.firstname}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="firstname"
-                        label="First Name"
-                        name="firstname"
-                        autoFocus
-                        onChange={handleChange}
-                        value={editRequestModel.id}
-                        helperText={formErrors.firstname}
-                    />
-                    <TextField
-                        error={formErrors.firstname}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="firstname"
-                        label="First Name"
-                        name="firstname"
-                        autoFocus
-                        onChange={handleChange}
-                        value={editRequestModel.name}
-                        helperText={formErrors.firstname}
-                    />
-                    <TextField
-                        error={formErrors.lastname}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="lastname"
-                        label="Last Name"
-                        name="lastname"
-                        autoFocus
-                        onChange={handleChange}
-                        value={editRequestModel.number}
-                        helperText={formErrors.lastname}
-                    />
-                    <TextField
-                        error={formErrors.email}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        value={editRequestModel.numberOfPeople}
-                        onChange={handleChange}
-                        helperText={formErrors.email}
-                    />
-                    <TextField
-                        error={formErrors.dateofbirth}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="email"
-                        name="dateofbirth"
-                        type="date"
-                        autoComplete="dateofbirth"
-                        value={editRequestModel.priceForNight}
-                        onChange={handleChange}
-                        helperText={formErrors.dateofbirth}
-                    />
-                    <TextField
-                        error={formErrors.password}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        onChange={handleChange}
-                        value={editRequestModel.description}
-                        helperText={formErrors.password}
-                    />
-                    <TextField
-                        error={formErrors.passwordconfirm}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        name="passwordconfirm"
-                        label="Password Confirm"
-                        type="password"
-                        id="passwordconfirm"
-                        autoComplete="current-password"
-                        onChange={handleChange}
-                        value={editRequestModel.roomType}
-                        helperText={formErrors.passwordconfirm}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox value="allowExtraEmails" color="primary" />}
-                        label="I want to receive inspiration, marketing promotions and updates via email."
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={editRoom}
-                    >
+        <>
+            <React.Fragment>
+                <CssBaseline />
+                <main>
+                    <Container className={classes.cardGrid} component="main" maxWidth="md">
+                        {/* End hero unit */}
+                        <Grid
+                            container
+                            spacing={4}
+                            className={classes.form}
+                            justify="center"
+                            alignItems="center"
+                        >
+                            {room && (
+                                <Grid item xs={12} sm={6} md={4}>
+                                    <Typography gutterBottom variant="h5" component="h2">
+                                        Name: {room.name}
+                                    </Typography>
+                                    <Typography>Description: {room.description}</Typography>
+                                    <Typography>
+                                        {' '}
+                                        Number Of People: {room.numberOfPeople}
+                                    </Typography>
+                                    <Typography> Price For Night: {room.priceForNight}</Typography>
+                                    <Typography>
+                                        {' '}
+                                        Type: {converterRoomType(room.roomType)}
+                                    </Typography>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </Container>
+                </main>
+            </React.Fragment>
+            <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <div className={classes.paper}>
+                    <Typography component="h1" variant="h5">
                         Edit Room
-                    </Button>
-                </form>
-            </div>
-            <Box mt={5}></Box>
-        </Container>
+                    </Typography>
+                    <form className={classes.form} noValidate>
+                        {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+
+                        <TextField
+                            error={formErrors.name}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            name="name"
+                            autoFocus
+                            onChange={handleChange}
+                            value={editRequestModel.name}
+                            helperText={formErrors.name}
+                        />
+                        <TextField
+                            error={formErrors.number}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="number"
+                            label="Number"
+                            name="number"
+                            autoFocus
+                            type="number"
+                            autoComplete="number"
+                            onChange={handleChange}
+                            value={editRequestModel.number}
+                            helperText={formErrors.number}
+                        />
+                        <TextField
+                            error={formErrors.numberOfPeople}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="numberOfPeople"
+                            label="Number Of People"
+                            name="numberOfPeople"
+                            autoFocus
+                            type="number"
+                            autoComplete="numberOfPeople"
+                            value={editRequestModel.numberOfPeople}
+                            onChange={handleChange}
+                            helperText={formErrors.numberOfPeople}
+                        />
+                        <TextField
+                            error={formErrors.priceForNight}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="priceForNight"
+                            name="priceForNight"
+                            autoFocus
+                            type="number"
+                            label="price For Night"
+                            autoComplete="priceForNight"
+                            value={editRequestModel.priceForNight}
+                            onChange={handleChange}
+                            helperText={formErrors.priceForNight}
+                        />
+                        <TextField
+                            error={formErrors.description}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="description"
+                            label="Description"
+                            id="description"
+                            onChange={handleChange}
+                            value={editRequestModel.description}
+                            helperText={formErrors.description}
+                        />
+                        <TextField
+                            error={formErrors.roomType}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="roomType"
+                            label="Room Type"
+                            id="roomType"
+                            type="number"
+                            onChange={handleChange}
+                            value={editRequestModel.roomType}
+                            helperText={formErrors.roomType}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={editRoom}
+                        >
+                            Edit Room
+                        </Button>
+                    </form>
+                </div>
+                <Box mt={5}></Box>
+            </Container>
+        </>
     );
 }
 
