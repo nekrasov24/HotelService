@@ -1,15 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-
 import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-
 import Box from '@material-ui/core/Box';
-
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
@@ -36,19 +33,87 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function validateName(name) {
+    if (!name) {
+        return 'Name is required';
+    }
+    if (name.length > 5) {
+        return 'Name can not longer than 30';
+    }
+    return '';
+}
+
+function validateNumber(number) {
+    if (!number) {
+        return 'Number is required';
+    }
+    if (Number(number) < 0) {
+        return 'Number can not negative';
+    }
+    if (Number(number) > 100) {
+        return 'Number can not longer than 100';
+    }
+    return '';
+}
+
+function validateNumberOfPeople(numberOfPeople) {
+    if (!numberOfPeople) {
+        return 'Number Of People is required';
+    }
+    if (Number(numberOfPeople) < 0) {
+        return 'Number Of People can not negative';
+    }
+    if (Number(numberOfPeople) > 10) {
+        return 'Number Of People can not longer than 10';
+    }
+    return '';
+}
+
+function validatePriceForNight(priceForNight) {
+    if (!priceForNight) {
+        return 'Price For Night is required';
+    }
+    if (Number(priceForNight) < 0) {
+        return 'Price For Night can not negative';
+    }
+    if (Number(priceForNight) > 1000) {
+        return 'Price For Night can not longer than 1000';
+    }
+    return '';
+}
+
+function validateDescription(description) {
+    if (!description) {
+        return 'Description is required';
+    }
+    if (description.length > 200) {
+        return 'Description can not longer than 200';
+    }
+    return '';
+}
+
+function validateRoomType(roomType) {
+    if (!roomType) {
+        return 'Room Type is required';
+    }
+    return '';
+}
+
+const initialState = {
+    name: '',
+    number: '',
+    numberOfPeople: '',
+    priceForNight: '',
+    description: '',
+    roomType: '',
+};
+
 function EditRoom() {
     const classes = useStyles();
     const history = useHistory();
     const [room, setRoom] = useState();
-    const [editRequestModel, setEditRequestModel] = useState({
-        id: '',
-        name: '',
-        number: '',
-        numberOfPeople: '',
-        priceForNight: '',
-        description: '',
-        roomType: '',
-    });
+    const [editRequestModel, setEditRequestModel] = useState(initialState);
+    const { enqueueSnackbar } = useSnackbar();
 
     const [formErrors, setFormErrors] = useState({
         id: '',
@@ -58,62 +123,48 @@ function EditRoom() {
         priceForNight: '',
         description: '',
         roomType: '',
+        err: '',
     });
 
     let { roomId } = useParams();
-
     const validate = () => {
-        let isValid = true;
+        var propErrors = {
+            name: '',
+            number: '',
+            numberOfPeople: '',
+            priceForNight: '',
+            description: '',
+            roomType: '',
+        };
 
-        if (!editRequestModel.id) {
-            setFormErrors((formErrors) => ({ ...formErrors, id: 'Id is required' }));
+        var isValid = true;
+
+        propErrors.name = validateName(editRequestModel.name);
+        if (propErrors.name) {
             isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, id: '' }));
+        }
+        propErrors.number = validateNumber(editRequestModel.number);
+        if (propErrors.number) {
+            isValid = false;
+        }
+        propErrors.numberOfPeople = validateNumberOfPeople(editRequestModel.numberOfPeople);
+        if (propErrors.numberOfPeople) {
+            isValid = false;
+        }
+        propErrors.priceForNight = validatePriceForNight(editRequestModel.priceForNight);
+        if (propErrors.priceForNight) {
+            isValid = false;
+        }
+        propErrors.description = validateDescription(editRequestModel.description);
+        if (propErrors.description) {
+            isValid = false;
+        }
+        propErrors.roomType = validateRoomType(editRequestModel.roomType);
+        if (propErrors.roomType) {
+            isValid = false;
         }
 
-        if (!editRequestModel.name) {
-            setFormErrors((formErrors) => ({ ...formErrors, name: 'Name is required' }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, name: '' }));
-        }
-
-        if (!editRequestModel.number) {
-            setFormErrors((formErrors) => ({ ...formErrors, number: 'Number is required' }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, number: '' }));
-        }
-
-        if (!editRequestModel.numberOfPeople) {
-            setFormErrors((formErrors) => ({
-                ...formErrors,
-                numberOfPeople: 'Number Of People is required',
-            }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, numberOfPeople: '' }));
-        }
-
-        if (!editRequestModel.priceForNight) {
-            setFormErrors((formErrors) => ({
-                ...formErrors,
-                priceForNight: 'Price For Night is required',
-            }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, priceForNight: '' }));
-        }
-
-        if (!editRequestModel.roomType) {
-            setFormErrors((formErrors) => ({ ...formErrors, roomType: 'Room Type is required' }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, roomType: '' }));
-        }
-
-        return isValid;
+        return { propErrors, isValid };
     };
 
     const handleChange = useCallback((e) => {
@@ -142,10 +193,11 @@ function EditRoom() {
 
     const editRoom = (e) => {
         e.preventDefault();
-        const result = validate();
-        if (result) {
-            setFormErrors((formErrors) => ({ ...formErrors, err: null }));
+        const { propErrors, isValid } = validate();
 
+        setFormErrors((formErrors) => ({ ...formErrors, ...propErrors }));
+
+        if (isValid) {
             const editRoomData = {
                 id: editRequestModel.id,
                 name: editRequestModel.name,
@@ -158,7 +210,11 @@ function EditRoom() {
             axios
                 .put('https://localhost:44344/api/editroom', editRoomData)
                 .then((res) => {
+                    const responce = res.data;
                     history.push('/HomePage');
+                    enqueueSnackbar(responce, {
+                        variant: 'success',
+                    });
                 })
                 .catch((res) => {
                     console.log(res);
@@ -236,7 +292,6 @@ function EditRoom() {
                             name="number"
                             autoFocus
                             type="number"
-                            autoComplete="number"
                             onChange={handleChange}
                             value={editRequestModel.number}
                             helperText={formErrors.number}
@@ -252,7 +307,6 @@ function EditRoom() {
                             name="numberOfPeople"
                             autoFocus
                             type="number"
-                            autoComplete="numberOfPeople"
                             value={editRequestModel.numberOfPeople}
                             onChange={handleChange}
                             helperText={formErrors.numberOfPeople}
@@ -268,7 +322,6 @@ function EditRoom() {
                             autoFocus
                             type="number"
                             label="price For Night"
-                            autoComplete="priceForNight"
                             value={editRequestModel.priceForNight}
                             onChange={handleChange}
                             helperText={formErrors.priceForNight}

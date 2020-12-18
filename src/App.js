@@ -13,6 +13,7 @@ import AddRoom from './Components/AddRoom';
 import EditRoom from './Components/EditRoom';
 import DeleteRoom from './Components/DeleteRoom';
 import RoomManagement from './Components/RoomManagement';
+import EditProfile from './Components/EditProfile';
 
 function Show({ children }) {
     const location = useLocation();
@@ -35,12 +36,12 @@ function App() {
                     <Route path="/homepage" component={HomePage} />
                     <Route path="/roomManagement" component={RoomManagement} />
                     <Route path="/profile" component={Profile} />
+                    <Route path="/edit-profile/:userId" component={EditProfile} />
                     <Route path="/register" component={Register} />
                     <Route path="/authenticate" component={Authenticate} />
                     <Route path="/addroom" component={AddRoom} />
                     <Route path="/edit-room/:roomId" component={EditRoom} />
                     <Route path="/delete-room/:roomId" component={DeleteRoom} />
-                    <Route path="/deleteroom" component={DeleteRoom} />
                     <Route path="/" component={Welcome} />
                 </Switch>
             </Router>

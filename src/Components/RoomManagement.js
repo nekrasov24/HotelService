@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
+    grid: {
+        margin: theme.spacing(4),
+    },
 }));
 
 function RoomManagement() {
@@ -83,6 +86,10 @@ function RoomManagement() {
         [history],
     );
 
+    const addRoomHandler = () => {
+        history.push('/addroom');
+    };
+
     return (
         <>
             <React.Fragment>
@@ -90,6 +97,14 @@ function RoomManagement() {
                 <main>
                     <Container className={classes.cardGrid} maxWidth="md">
                         {/* End hero unit */}
+                        <Grid container spacing={4} className={classes.grid}>
+                            {_AuthContext.scope === 'Admin' && (
+                                <Button color="primary" onClick={addRoomHandler}>
+                                    Add Room
+                                </Button>
+                            )}
+                        </Grid>
+
                         <Grid container spacing={4}>
                             {room.map((r) => (
                                 <Grid item xs={12} sm={6} md={4}>

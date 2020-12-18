@@ -25,7 +25,6 @@ const useStyles = makeStyles({
 export default function AdminDraw() {
     const classes = useStyles();
     const [state, setState] = useState({});
-    const [abs, setAbs] = useState(['left']);
     const history = useHistory();
 
     const toggleDrawer = (anchor, open) => (event) => {
@@ -81,7 +80,7 @@ export default function AdminDraw() {
 
     return (
         <div>
-            {abs.map((anchor) => (
+            {['left'].map((anchor) => (
                 <Fragment key={anchor}>
                     <IconButton color="inherit" onClick={toggleDrawer(anchor, true)}>
                         <MenuIcon />

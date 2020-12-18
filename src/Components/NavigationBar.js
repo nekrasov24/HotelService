@@ -24,9 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function LoggedInNavbar({ email, logoutHandler, profileHandler }) {
-    const classes = useStyles();
-
+function LoggedInNavbar({ email, logoutHandler, profileHandler, classes }) {
     return (
         <>
             <UserDraw />
@@ -47,9 +45,7 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler }) {
     );
 }
 
-function AdminLoggedInNavbar({ email, logoutHandler, profileHandler }) {
-    const classes = useStyles();
-
+function AdminLoggedInNavbar({ email, logoutHandler, profileHandler, classes }) {
     return (
         <>
             <AdminDraw />
@@ -71,9 +67,7 @@ function AdminLoggedInNavbar({ email, logoutHandler, profileHandler }) {
     );
 }
 
-function AnonymousNavbar({ logInHandler, signUpHandler }) {
-    const classes = useStyles();
-
+function AnonymousNavbar({ logInHandler, signUpHandler, classes }) {
     return (
         <>
             <Typography className={classes.title}>Welcome</Typography>
@@ -127,12 +121,14 @@ function NavigationBar() {
         history.push('/register');
     }, [history]);
 
+    const classes = useStyles();
     const content = useMemo(() => {
         if (isAdminLoggedIn) {
             return AdminLoggedInNavbar({
                 email: _AuthContext.email,
                 logoutHandler: logout,
                 profileHandler: handleGetProfile,
+                classes,
             });
         } else {
             return _AuthContext.isLoggedIn
@@ -140,10 +136,19 @@ function NavigationBar() {
                       email: _AuthContext.email,
                       logoutHandler: logout,
                       profileHandler: handleGetProfile,
+                      classes,
                   })
-                : AnonymousNavbar({ logInHandler, signUpHandler });
+                : AnonymousNavbar({ logInHandler, signUpHandler, classes });
         }
-    }, [_AuthContext, logout, handleGetProfile, logInHandler, signUpHandler, isAdminLoggedIn]);
+    }, [
+        _AuthContext,
+        logout,
+        handleGetProfile,
+        logInHandler,
+        signUpHandler,
+        isAdminLoggedIn,
+        classes,
+    ]);
 
     return (
         <AppBar position="sticky">

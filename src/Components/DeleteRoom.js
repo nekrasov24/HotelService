@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { useHistory, useParams } from 'react-router-dom';
@@ -37,6 +35,7 @@ function DeleteRoom() {
     const history = useHistory();
     let { roomId } = useParams();
     const [room, setRoom] = useState();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [deleteRequestModel, setDeleteRequestModel] = useState({
         id: '',
@@ -94,7 +93,11 @@ function DeleteRoom() {
             axios
                 .delete(`https://localhost:44344/api/${roomId}`)
                 .then((res) => {
+                    const responce = res.data;
                     history.push('/HomePage');
+                    enqueueSnackbar(responce, {
+                        variant: 'success',
+                    });
                 })
                 .catch((res) => {
                     console.log(res);

@@ -8,6 +8,9 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
+import Select from '@material-ui/core/Select';
+import { useSnackbar } from 'notistack';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -29,17 +32,87 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function validateName(name) {
+    if (!name) {
+        return 'Name is required';
+    }
+    if (name.length > 5) {
+        return 'Name can not longer than 5';
+    }
+    return '';
+}
+
+function validateNumber(number) {
+    if (!number) {
+        return 'Number is required';
+    }
+    if (Number(number) < 0) {
+        return 'Number can not negative';
+    }
+    if (Number(number) > 100) {
+        return 'Number can not longer than 100';
+    }
+    return '';
+}
+
+function validateNumberOfPeople(numberOfPeople) {
+    if (!numberOfPeople) {
+        return 'Number Of People is required';
+    }
+    if (Number(numberOfPeople) < 0) {
+        return 'Number Of People can not negative';
+    }
+    if (Number(numberOfPeople) > 10) {
+        return 'Number Of People can not longer than 10';
+    }
+    return '';
+}
+
+function validatePriceForNight(priceForNight) {
+    console.log(priceForNight);
+    if (!priceForNight) {
+        return 'Price For Night is required';
+    }
+    if (Number(priceForNight) < 0) {
+        return 'Price For Night can not negative';
+    }
+    if (Number(priceForNight) > 1000) {
+        return 'Price For Night can not longer than 1000';
+    }
+    return '';
+}
+
+function validateDescription(description) {
+    if (!description) {
+        return 'Description is required';
+    }
+    if (description.length > 200) {
+        return 'Description can not longer than 200';
+    }
+    return '';
+}
+
+function validateRoomType(roomType) {
+    if (!roomType) {
+        return 'Room Type is required';
+    }
+    return '';
+}
+
+const initialState = {
+    name: '',
+    number: '',
+    numberOfPeople: '',
+    priceForNight: '',
+    description: '',
+    roomType: '',
+};
+
 function AddRoom() {
     const classes = useStyles();
     const history = useHistory();
-    const [addRequestModel, setAddRequestModel] = useState({
-        name: '',
-        number: '',
-        numberOfPeople: '',
-        priceForNight: '',
-        description: '',
-        roomType: '',
-    });
+    const [addRequestModel, setAddRequestModel] = useState(initialState);
+    const { enqueueSnackbar } = useSnackbar();
 
     const [formErrors, setFormErrors] = useState({
         name: '',
@@ -48,53 +121,47 @@ function AddRoom() {
         priceForNight: '',
         description: '',
         roomType: '',
+        err: '',
     });
 
     const validate = () => {
-        let isValid = true;
+        var propErrors = {
+            name: '',
+            number: '',
+            numberOfPeople: '',
+            priceForNight: '',
+            description: '',
+            roomType: '',
+        };
 
-        if (!addRequestModel.name) {
-            setFormErrors((formErrors) => ({ ...formErrors, name: 'Name is required' }));
+        var isValid = true;
+
+        propErrors.name = validateName(addRequestModel.name);
+        if (propErrors.name) {
             isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, name: '' }));
+        }
+        propErrors.number = validateNumber(addRequestModel.number);
+        if (propErrors.number) {
+            isValid = false;
+        }
+        propErrors.numberOfPeople = validateNumberOfPeople(addRequestModel.numberOfPeople);
+        if (propErrors.numberOfPeople) {
+            isValid = false;
+        }
+        propErrors.priceForNight = validatePriceForNight(addRequestModel.priceForNight);
+        if (propErrors.priceForNight) {
+            isValid = false;
+        }
+        propErrors.description = validateDescription(addRequestModel.description);
+        if (propErrors.description) {
+            isValid = false;
+        }
+        propErrors.roomType = validateRoomType(addRequestModel.roomType);
+        if (propErrors.roomType) {
+            isValid = false;
         }
 
-        if (!addRequestModel.number) {
-            setFormErrors((formErrors) => ({ ...formErrors, number: 'Number is required' }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, number: '' }));
-        }
-
-        if (!addRequestModel.numberOfPeople) {
-            setFormErrors((formErrors) => ({
-                ...formErrors,
-                numberOfPeople: 'Number Of People is required',
-            }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, numberOfPeople: '' }));
-        }
-
-        if (!addRequestModel.priceForNight) {
-            setFormErrors((formErrors) => ({
-                ...formErrors,
-                priceForNight: 'Price For Night is required',
-            }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, priceForNight: '' }));
-        }
-
-        if (!addRequestModel.roomType) {
-            setFormErrors((formErrors) => ({ ...formErrors, roomType: 'Room Type is required' }));
-            isValid = false;
-        } else {
-            setFormErrors((formErrors) => ({ ...formErrors, roomType: '' }));
-        }
-
-        return isValid;
+        return { propErrors, isValid };
     };
 
     const handleChange = useCallback((e) => {
@@ -107,10 +174,11 @@ function AddRoom() {
 
     const addRoom = (e) => {
         e.preventDefault();
-        const result = validate();
-        if (result) {
-            setFormErrors((formErrors) => ({ ...formErrors, err: null }));
+        const { propErrors, isValid } = validate();
 
+        setFormErrors((formErrors) => ({ ...formErrors, ...propErrors }));
+
+        if (isValid) {
             const addRoomData = {
                 name: addRequestModel.name,
                 number: Number(addRequestModel.number),
@@ -122,11 +190,15 @@ function AddRoom() {
             axios
                 .post('https://localhost:44344/api/addroom', addRoomData)
                 .then((res) => {
+                    const responce = res.data;
                     history.push('/HomePage');
+                    enqueueSnackbar(responce, {
+                        variant: 'success',
+                    });
                 })
                 .catch((res) => {
                     console.log(res);
-                    setFormErrors((formErrors) => ({ ...formErrors, err: res.response.data }));
+                    setFormErrors((formErrors) => ({ ...formErrors, err: [res.response.data] }));
                 });
         }
     };
@@ -165,8 +237,8 @@ function AddRoom() {
                         name="number"
                         autoFocus
                         type="number"
-                        autoComplete="number"
                         onChange={handleChange}
+                        /*onBlur={handleNumberBlur}*/
                         value={addRequestModel.number}
                         helperText={formErrors.number}
                     />
@@ -181,9 +253,9 @@ function AddRoom() {
                         name="numberOfPeople"
                         autoFocus
                         type="number"
-                        autoComplete="numberOfPeople"
                         value={addRequestModel.numberOfPeople}
                         onChange={handleChange}
+                        /*onBlur={handleNumberOfPeopleBlur}*/
                         helperText={formErrors.numberOfPeople}
                     />
                     <TextField
@@ -198,6 +270,7 @@ function AddRoom() {
                         type="number"
                         value={addRequestModel.priceForNight}
                         onChange={handleChange}
+                        /*onBlur={handlePriceForNightBlur}*/
                         helperText={formErrors.priceForNight}
                     />
                     <TextField
@@ -210,10 +283,11 @@ function AddRoom() {
                         label="Description"
                         id="description"
                         onChange={handleChange}
+                        /*onBlur={handleDescriptionBlur}*/
                         value={addRequestModel.description}
                         helperText={formErrors.description}
                     />
-                    <TextField
+                    <Select
                         error={formErrors.roomType}
                         variant="outlined"
                         margin="normal"
@@ -222,11 +296,14 @@ function AddRoom() {
                         name="roomType"
                         label="Room Type"
                         id="roomType"
-                        type="number"
                         onChange={handleChange}
                         value={addRequestModel.roomType}
                         helperText={formErrors.roomType}
-                    />
+                    >
+                        <MenuItem value={1}>Standart</MenuItem>
+                        <MenuItem value={2}>DeLuxe</MenuItem>
+                        <MenuItem value={3}>FamilyRoom</MenuItem>
+                    </Select>
                     <Button
                         type="submit"
                         fullWidth

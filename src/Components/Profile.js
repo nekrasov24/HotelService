@@ -4,11 +4,10 @@ import 'Styles/RegisterStyle.css';
 import axios from 'axios';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
 import { useHistory } from 'react-router-dom';
-import { generatePath } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -61,17 +60,13 @@ function Profile() {
         }
     }, [_AuthContext.id]);
 
-    const userId = _AuthContext.id;
-    const editHandler = useCallback(
-        (userId) => {
-            history.push(
-                generatePath('/edit-user/:userId', {
-                    userId,
-                }),
-            );
-        },
-        [history],
-    );
+    /*const editHandler = useCallback(() => {
+        history.push(generatePath('/edit-profile/:userId', _AuthContext.id));
+    }, [history, _AuthContext.id]);*/
+
+    const editHandler = () => {
+        history.push('/edit-profile/:userId');
+    };
 
     return (
         <>
@@ -100,7 +95,8 @@ function Profile() {
                                     <Button
                                         size="small"
                                         color="primary"
-                                        onClick={() => editHandler(user.id)}
+                                        onClick={editHandler}
+                                        //onClick={() => editHandler(_AuthContext.id)}
                                     >
                                         Edit
                                     </Button>
