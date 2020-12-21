@@ -45,12 +45,10 @@ function EditProfile() {
     const history = useHistory();
     const [getUser, setGetUser] = useState();
     const [user, setUser] = useState({
-        firstname: '',
-        lastname: '',
+        firstName: '',
+        lastName: '',
         email: '',
-        dateofbirth: '',
-        password: '',
-        passwordconfirm: '',
+        dateOfBirth: '',
     });
 
     const regex = new RegExp(
@@ -58,30 +56,28 @@ function EditProfile() {
     );
 
     const [formErrors, setformErrors] = useState({
-        firstname: '',
-        lastname: '',
+        firstName: '',
+        lastName: '',
         email: '',
-        dateofbirth: '',
-        password: '',
-        passwordconfirm: '',
+        dateOfBirth: '',
         err: '',
     });
 
     const validate = () => {
         let isValid = true;
 
-        if (!user.firstname) {
-            setformErrors((formErrors) => ({ ...formErrors, firstname: 'First Name is required' }));
+        if (!user.firstName) {
+            setformErrors((formErrors) => ({ ...formErrors, firstName: 'First Name is required' }));
             isValid = false;
         } else {
-            setformErrors((formErrors) => ({ ...formErrors, firstname: '' }));
+            setformErrors((formErrors) => ({ ...formErrors, firstName: '' }));
         }
 
-        if (!user.lastname) {
-            setformErrors((formErrors) => ({ ...formErrors, lastname: 'Last Name is required' }));
+        if (!user.lastName) {
+            setformErrors((formErrors) => ({ ...formErrors, lastName: 'Last Name is required' }));
             isValid = false;
         } else {
-            setformErrors((formErrors) => ({ ...formErrors, lastname: '' }));
+            setformErrors((formErrors) => ({ ...formErrors, lastName: '' }));
         }
 
         if (!user.email) {
@@ -91,31 +87,14 @@ function EditProfile() {
             setformErrors((formErrors) => ({ ...formErrors, email: '' }));
         }
 
-        if (!user.dateofbirth) {
+        if (!user.dateOfBirth) {
             setformErrors((formErrors) => ({
                 ...formErrors,
-                dateofbirth: 'Date of Birth is required',
+                dateOfBirth: 'Date of Birth is required',
             }));
             isValid = false;
         } else {
-            setformErrors((formErrors) => ({ ...formErrors, dateofbirth: '' }));
-        }
-
-        if (!user.password) {
-            setformErrors((formErrors) => ({ ...formErrors, password: 'Password is required' }));
-            isValid = false;
-        } else {
-            setformErrors((formErrors) => ({ ...formErrors, password: '' }));
-        }
-
-        if (!user.passwordconfirm) {
-            setformErrors((formErrors) => ({
-                ...formErrors,
-                passwordconfirm: 'Password Confirm is required',
-            }));
-            isValid = false;
-        } else {
-            setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: '' }));
+            setformErrors((formErrors) => ({ ...formErrors, dateOfBirth: '' }));
         }
 
         if (!regex.test(user.email)) {
@@ -123,23 +102,6 @@ function EditProfile() {
             isValid = false;
         } else {
             setformErrors((formErrors) => ({ ...formErrors, email: '' }));
-        }
-
-        if (user.password.length < 4) {
-            setformErrors((formErrors) => ({ ...formErrors, password: 'Password is short' }));
-            isValid = false;
-        } else {
-            setformErrors((formErrors) => ({ ...formErrors, password: null }));
-        }
-
-        if (user.password !== user.passwordconfirm) {
-            setformErrors((formErrors) => ({
-                ...formErrors,
-                passwordconfirm: 'Passwords don t match',
-            }));
-            isValid = false;
-        } else {
-            setformErrors((formErrors) => ({ ...formErrors, passwordconfirm: '' }));
         }
         return isValid;
     };
@@ -153,18 +115,16 @@ function EditProfile() {
         [user],
     );
 
-    //let { userId } = useParams();
-
     useEffect(() => {
         if (_AuthContext.id) {
             axios.get(`https://localhost:44344/api/user/${_AuthContext.id}`).then((res) => {
                 setGetUser(res.data);
 
                 setUser({
-                    firstname: res.data.firstName,
-                    lastname: res.data.lastName,
+                    firstName: res.data.firstName,
+                    lastName: res.data.lastName,
                     email: res.data.email,
-                    dateofbirth: res.data.dateofbirth,
+                    dateOfBirth: res.data.dateOfBirth,
                 });
             });
         }
@@ -177,13 +137,13 @@ function EditProfile() {
             setformErrors((formErrors) => ({ ...formErrors, err: null }));
 
             const userData = {
-                firstname: user.firstname,
-                lastname: user.lastname,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
-                dateofbirth: user.dateofbirth,
+                dateOfBirth: user.dateOfBirth,
             };
             axios
-                .post('https://localhost:44344/api/edituser', userData)
+                .put('https://localhost:44344/api/edituser', userData)
                 .then((res) => {
                     const responce = res.data;
                     history.push('/HomePage');
@@ -215,11 +175,11 @@ function EditProfile() {
                             {getUser && (
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Typography gutterBottom variant="h5" component="h2">
-                                        First Name: {getUser.firstname}
+                                        First Name: {getUser.firstName}
                                     </Typography>
-                                    <Typography>Last Name: {getUser.lastname}</Typography>
+                                    <Typography>Last Name: {getUser.lastName}</Typography>
                                     <Typography> Email: {getUser.email}</Typography>
-                                    <Typography> Date Of Birth: {getUser.dateofbirth}</Typography>
+                                    <Typography> Date Of Birth: {getUser.dateOfBirth}</Typography>
                                 </Grid>
                             )}
                         </Grid>
@@ -237,7 +197,7 @@ function EditProfile() {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    error={!!formErrors.firstName}
+                                    error={formErrors.firstName}
                                     variant="outlined"
                                     margin="normal"
                                     required
@@ -253,18 +213,18 @@ function EditProfile() {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    error={formErrors.lastname}
+                                    error={formErrors.lastName}
                                     variant="outlined"
                                     margin="normal"
                                     required
                                     fullWidth
-                                    id="lastname"
+                                    id="lastName"
                                     label="Last Name"
-                                    name="lastname"
+                                    name="lastName"
                                     autoFocus
                                     onChange={handleChange}
-                                    value={user.lastname}
-                                    helperText={formErrors.lastname}
+                                    value={user.lastName}
+                                    helperText={formErrors.lastName}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -283,17 +243,17 @@ function EditProfile() {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    error={formErrors.dateofbirth}
+                                    error={formErrors.dateOfBirth}
                                     variant="outlined"
                                     required
                                     fullWidth
-                                    id="email"
+                                    id="dateOfBirth"
                                     name="dateofbirth"
                                     type="date"
-                                    autoComplete="dateofbirth"
-                                    value={user.dateofbirth}
+                                    autoComplete="dateOfBirth"
+                                    value={user.dateOfBirth}
                                     onChange={handleChange}
-                                    helperText={formErrors.dateofbirth}
+                                    helperText={formErrors.dateOfBirth}
                                 />
                             </Grid>
                         </Grid>
