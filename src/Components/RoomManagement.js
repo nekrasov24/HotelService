@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
+//import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -17,6 +17,8 @@ import { useCallback } from 'react';
 import { generatePath } from 'react-router';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
 import ButtonGroup from '@material-ui/core/CardMedia';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
     },
     cardMedia: {
-        paddingTop: '56.25%', // 16:9
+        height: '200px',
     },
     cardContent: {
         flexGrow: 1,
@@ -50,6 +52,16 @@ const useStyles = makeStyles((theme) => ({
     },
     grid: {
         margin: theme.spacing(4),
+    },
+    /*rootImage: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        overflow: 'hidden',
+    },*/
+    gridList: {
+        width: 500,
+        //height: 450,
     },
 }));
 
@@ -87,6 +99,10 @@ function RoomManagement() {
         [history],
     );
 
+    const img = {
+        cols: 2,
+    };
+
     const addRoomHandler = () => {
         history.push('/addroom');
     };
@@ -111,14 +127,33 @@ function RoomManagement() {
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Card className={classes.card}>
                                         {r.roomImages.map((i) => (
-                                            <CardMedia
-                                                component="img"
-                                                key={i.roomId}
-                                                className={classes.cardMedia}
-                                                //image={i.imagePath}
-                                                src={`data:image/jpeg;base64,${i.imagePath}`}
-                                                //title="Image title"
-                                            />
+                                            <div>
+                                                <div className={classes.rootImage}>
+                                                    <GridList
+                                                        //cellHeight={500}
+                                                        className={classes.gridList}
+                                                        cols={3}
+                                                    >
+                                                        <GridListTile
+                                                            key={i.roomId}
+                                                            cols={img.cols || 1}
+                                                        >
+                                                            <img
+                                                                src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                                alt={i.title}
+                                                            />
+                                                        </GridListTile>
+                                                    </GridList>
+                                                </div>
+                                                {/* <CardMedia
+                                                    component="img"
+                                                    key={i.roomId}
+                                                    className={classes.cardMedia}
+                                                    //image={i.imagePath}
+                                                    src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                    //title="Image title"
+                                                /> */}
+                                            </div>
                                         ))}
                                         <CardContent className={classes.cardContent}>
                                             <Typography gutterBottom variant="h5" component="h2">

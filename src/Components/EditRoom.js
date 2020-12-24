@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,7 +10,6 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
-
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -115,6 +114,7 @@ function EditRoom() {
     const [room, setRoom] = useState();
     const [editRequestModel, setEditRequestModel] = useState(initialState);
     const { enqueueSnackbar } = useSnackbar();
+    const fileRef = useRef();
 
     const [formErrors, setFormErrors] = useState({
         id: '',
@@ -199,20 +199,24 @@ function EditRoom() {
         setFormErrors((formErrors) => ({ ...formErrors, ...propErrors }));
 
         if (isValid) {
-            const editRoomData = {
-                id: editRequestModel.id,
-                name: editRequestModel.name,
-                number: Number(editRequestModel.number),
-                numberOfPeople: Number(editRequestModel.numberOfPeople),
-                priceForNight: Number(editRequestModel.priceForNight),
-                description: editRequestModel.description,
-                roomType: Number(editRequestModel.roomType),
-            };
+            let formData = new FormData();
+            formData.append('name', editRequestModel.name);
+            formData.append('number', Number(editRequestModel.number));
+            formData.append('numberOfPeople', Number(editRequestModel.numberOfPeople));
+            formData.append('priceForNight', Number(editRequestModel.priceForNight));
+            formData.append('description', editRequestModel.description);
+            formData.append('roomType', Number(editRequestModel.roomType));
+            const file = fileRef.current.files[0];
+            if (file) {
+                formData.append('images', file, editRequestModel.image);
+            }
             axios
-                .put('https://localhost:44344/api/editroom', editRoomData)
+                .put('https://localhost:44344/api/editroom', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                })
                 .then((res) => {
                     const responce = res.data;
-                    history.push('/HomePage');
+                    history.push('/roomManagement');
                     enqueueSnackbar(responce, {
                         variant: 'success',
                     });
@@ -307,6 +311,9 @@ function EditRoom() {
                             label="Description"
                             id="description"
                             onChange={handleChange}
+                            multiline
+                            rowsMin={4}
+                            rowsMax={8}
                             value={editRequestModel.description}
                             helperText={formErrors.description}
                         />
@@ -327,6 +334,21 @@ function EditRoom() {
                             <MenuItem value={2}>DeLuxe</MenuItem>
                             <MenuItem value={3}>FamilyRoom</MenuItem>
                         </Select>
+                        <TextField
+                            //error={formErrors.description}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="image"
+                            //label="Description"
+                            id="image"
+                            type="file"
+                            onChange={handleChange}
+                            value={editRequestModel.image}
+                            inputRef={fileRef}
+                            //helperText={formErrors.description}
+                        />
                         <Button
                             type="submit"
                             fullWidth

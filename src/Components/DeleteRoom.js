@@ -92,7 +92,7 @@ function DeleteRoom() {
                 .delete(`https://localhost:44344/api/${roomId}`)
                 .then((res) => {
                     const responce = res.data;
-                    history.push('/HomePage');
+                    history.push('/roomManagement');
                     enqueueSnackbar(responce, {
                         variant: 'success',
                     });

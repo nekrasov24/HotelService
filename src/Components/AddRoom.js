@@ -11,6 +11,7 @@ import Alert from '@material-ui/lab/Alert';
 import Select from '@material-ui/core/Select';
 import { useSnackbar } from 'notistack';
 import MenuItem from '@material-ui/core/MenuItem';
+import { addRoomEndpoint } from 'utils/apiPathes';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -194,12 +195,12 @@ function AddRoom() {
             }
 
             axios
-                .post('https://localhost:44344/api/addroom', formData, {
+                .post(addRoomEndpoint, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                 })
                 .then((res) => {
                     const responce = res.data;
-                    history.push('/HomePage');
+                    history.push('/roomManagement');
                     enqueueSnackbar(responce, {
                         variant: 'success',
                     });
