@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -36,8 +36,8 @@ function validateName(name) {
     if (!name) {
         return 'Name is required';
     }
-    if (name.length > 5) {
-        return 'Name can not longer than 5';
+    if (name.length > 10) {
+        return 'Name can not longer than 10';
     }
     return '';
 }
@@ -106,6 +106,7 @@ const initialState = {
     priceForNight: '',
     description: '',
     roomType: '',
+    image: '',
 };
 
 function AddRoom() {
@@ -113,6 +114,7 @@ function AddRoom() {
     const history = useHistory();
     const [addRequestModel, setAddRequestModel] = useState(initialState);
     const { enqueueSnackbar } = useSnackbar();
+    const fileRef = useRef();
 
     const [formErrors, setFormErrors] = useState({
         name: '',
@@ -179,16 +181,22 @@ function AddRoom() {
         setFormErrors((formErrors) => ({ ...formErrors, ...propErrors }));
 
         if (isValid) {
-            const addRoomData = {
-                name: addRequestModel.name,
-                number: Number(addRequestModel.number),
-                numberOfPeople: Number(addRequestModel.numberOfPeople),
-                priceForNight: Number(addRequestModel.priceForNight),
-                description: addRequestModel.description,
-                roomType: Number(addRequestModel.roomType),
-            };
+            let formData = new FormData();
+            formData.append('name', addRequestModel.name);
+            formData.append('number', Number(addRequestModel.number));
+            formData.append('numberOfPeople', Number(addRequestModel.numberOfPeople));
+            formData.append('priceForNight', Number(addRequestModel.priceForNight));
+            formData.append('description', addRequestModel.description);
+            formData.append('roomType', Number(addRequestModel.roomType));
+            const file = fileRef.current.files[0];
+            if (file) {
+                formData.append('images', file, addRequestModel.image);
+            }
+
             axios
-                .post('https://localhost:44344/api/addroom', addRoomData)
+                .post('https://localhost:44344/api/addroom', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                })
                 .then((res) => {
                     const responce = res.data;
                     history.push('/HomePage');
@@ -279,11 +287,15 @@ function AddRoom() {
                         margin="normal"
                         required
                         fullWidth
+                        type="t"
                         name="description"
                         label="Description"
                         id="description"
                         onChange={handleChange}
                         /*onBlur={handleDescriptionBlur}*/
+                        multiline
+                        rowsMin={4}
+                        rowsMax={8}
                         value={addRequestModel.description}
                         helperText={formErrors.description}
                     />
@@ -304,6 +316,22 @@ function AddRoom() {
                         <MenuItem value={2}>DeLuxe</MenuItem>
                         <MenuItem value={3}>FamilyRoom</MenuItem>
                     </Select>
+                    <TextField
+                        //error={formErrors.description}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="image"
+                        //label="Description"
+                        id="image"
+                        type="file"
+                        onChange={handleChange}
+                        value={addRequestModel.image}
+                        inputRef={fileRef}
+                        //helperText={formErrors.description}
+                    />
+
                     <Button
                         type="submit"
                         fullWidth

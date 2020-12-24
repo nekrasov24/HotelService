@@ -38,10 +38,10 @@ export default function AdminDraw() {
         history.push('/roomManagement');
         console.log();
     };
-    const redirectProfile = () => {
+    /*const redirectProfile = () => {
         history.push('/profile');
         console.log();
-    };
+    };*/
 
     const list = (anchor) => (
         <div
@@ -53,23 +53,13 @@ export default function AdminDraw() {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List>
-                {['RoomManagement'].map((text, index) => (
+                {['Room Management'].map((text, index) => (
                     <>
                         <ListItem button key={text}>
                             <ListItemIcon>
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
                             <ListItemText primary={text} onClick={redirectRoomManagement} />
-                        </ListItem>
-                    </>
-                ))}
-                {['Profile'].map((text, index) => (
-                    <>
-                        <ListItem button key={text}>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} onClick={redirectProfile} />
                         </ListItem>
                     </>
                 ))}

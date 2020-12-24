@@ -10,8 +10,9 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
-import Grid from '@material-ui/core/Grid';
-import { converterRoomType } from 'Services/ConverterRoomType';
+
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -37,8 +38,8 @@ function validateName(name) {
     if (!name) {
         return 'Name is required';
     }
-    if (name.length > 5) {
-        return 'Name can not longer than 30';
+    if (name.length > 10) {
+        return 'Name can not longer than 10';
     }
     return '';
 }
@@ -227,36 +228,6 @@ function EditRoom() {
         <>
             <React.Fragment>
                 <CssBaseline />
-                <main>
-                    <Container className={classes.cardGrid} component="main" maxWidth="md">
-                        {/* End hero unit */}
-                        <Grid
-                            container
-                            spacing={4}
-                            className={classes.form}
-                            justify="center"
-                            alignItems="center"
-                        >
-                            {room && (
-                                <Grid item xs={12} sm={6} md={4}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        Name: {room.name}
-                                    </Typography>
-                                    <Typography>Description: {room.description}</Typography>
-                                    <Typography>
-                                        {' '}
-                                        Number Of People: {room.numberOfPeople}
-                                    </Typography>
-                                    <Typography> Price For Night: {room.priceForNight}</Typography>
-                                    <Typography>
-                                        {' '}
-                                        Type: {converterRoomType(room.roomType)}
-                                    </Typography>
-                                </Grid>
-                            )}
-                        </Grid>
-                    </Container>
-                </main>
             </React.Fragment>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
@@ -339,7 +310,7 @@ function EditRoom() {
                             value={editRequestModel.description}
                             helperText={formErrors.description}
                         />
-                        <TextField
+                        <Select
                             error={formErrors.roomType}
                             variant="outlined"
                             margin="normal"
@@ -348,11 +319,14 @@ function EditRoom() {
                             name="roomType"
                             label="Room Type"
                             id="roomType"
-                            type="number"
                             onChange={handleChange}
                             value={editRequestModel.roomType}
                             helperText={formErrors.roomType}
-                        />
+                        >
+                            <MenuItem value={1}>Standart</MenuItem>
+                            <MenuItem value={2}>DeLuxe</MenuItem>
+                            <MenuItem value={3}>FamilyRoom</MenuItem>
+                        </Select>
                         <Button
                             type="submit"
                             fullWidth

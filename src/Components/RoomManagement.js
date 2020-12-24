@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { useCallback } from 'react';
 import { generatePath } from 'react-router';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
+import ButtonGroup from '@material-ui/core/CardMedia';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -109,11 +110,16 @@ function RoomManagement() {
                             {room.map((r) => (
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Card className={classes.card}>
-                                        <CardMedia
-                                            className={classes.cardMedia}
-                                            image="https://source.unsplash.com/random"
-                                            title="Image title"
-                                        />
+                                        {r.roomImages.map((i) => (
+                                            <CardMedia
+                                                component="img"
+                                                key={i.roomId}
+                                                className={classes.cardMedia}
+                                                //image={i.imagePath}
+                                                src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                //title="Image title"
+                                            />
+                                        ))}
                                         <CardContent className={classes.cardContent}>
                                             <Typography gutterBottom variant="h5" component="h2">
                                                 {r.name}
@@ -129,27 +135,28 @@ function RoomManagement() {
                                                 Type: {converterRoomType(r.roomType)}
                                             </Typography>
                                         </CardContent>
+
                                         <CardActions>
-                                            {_AuthContext.scope === 'Admin' && (
-                                                <Button
-                                                    size="small"
-                                                    color="primary"
-                                                    onClick={() => editHandler(r.id)}
-                                                >
-                                                    Edit
-                                                </Button>
-                                            )}
-                                        </CardActions>
-                                        <CardActions>
-                                            {_AuthContext.scope === 'Admin' && (
-                                                <Button
-                                                    size="small"
-                                                    color="primary"
-                                                    onClick={() => deleteHandler(r.id)}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            )}
+                                            <ButtonGroup>
+                                                {_AuthContext.scope === 'Admin' && (
+                                                    <Button
+                                                        size="small"
+                                                        color="primary"
+                                                        onClick={() => editHandler(r.id)}
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                )}
+                                                {_AuthContext.scope === 'Admin' && (
+                                                    <Button
+                                                        size="small"
+                                                        color="primary"
+                                                        onClick={() => deleteHandler(r.id)}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                )}
+                                            </ButtonGroup>
                                         </CardActions>
                                     </Card>
                                 </Grid>

@@ -4,11 +4,9 @@ import { useSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { useHistory, useParams } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import { converterRoomType } from 'Services/ConverterRoomType';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -120,39 +118,21 @@ function DeleteRoom() {
                             justify="center"
                             alignItems="center"
                         >
-                            {room && (
-                                <Grid item xs={12} sm={6} md={4}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        Name: {room.name}
-                                    </Typography>
-                                    <Typography>Description: {room.description}</Typography>
-                                    <Typography>
-                                        {' '}
-                                        Number Of People: {room.numberOfPeople}
-                                    </Typography>
-                                    <Typography> Price For Night: {room.priceForNight}</Typography>
-                                    <Typography>
-                                        {' '}
-                                        Type: {converterRoomType(room.roomType)}
-                                    </Typography>
-                                </Grid>
-                            )}
+                            <Button
+                                error={formErrors.name}
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                                onClick={deleteRoom}
+                                helperText={formErrors.name}
+                            >
+                                Delete Room
+                            </Button>
                         </Grid>
                     </Container>
                 </main>
             </React.Fragment>
-
-            <Button
-                error={formErrors.name}
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={deleteRoom}
-                helperText={formErrors.name}
-            >
-                Delete Room
-            </Button>
         </>
     );
 }

@@ -162,29 +162,6 @@ function EditProfile() {
         <>
             <React.Fragment>
                 <CssBaseline />
-                <main>
-                    <Container className={classes.cardGrid} component="main" maxWidth="md">
-                        {/* End hero unit */}
-                        <Grid
-                            container
-                            spacing={4}
-                            className={classes.form}
-                            justify="center"
-                            alignItems="center"
-                        >
-                            {getUser && (
-                                <Grid item xs={12} sm={6} md={4}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        First Name: {getUser.firstName}
-                                    </Typography>
-                                    <Typography>Last Name: {getUser.lastName}</Typography>
-                                    <Typography> Email: {getUser.email}</Typography>
-                                    <Typography> Date Of Birth: {getUser.dateOfBirth}</Typography>
-                                </Grid>
-                            )}
-                        </Grid>
-                    </Container>
-                </main>
             </React.Fragment>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
@@ -265,7 +242,7 @@ function EditProfile() {
                             className={classes.submit}
                             onClick={handleSumbit}
                         >
-                            Sign Up
+                            Edit User
                         </Button>
                     </form>
                 </div>

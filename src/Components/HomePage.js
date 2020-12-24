@@ -50,7 +50,7 @@ function HomePage() {
     useEffect(() => {
         axios.get('https://localhost:44344/api/getallrooms').then((response) => {
             setRooms(response.data);
-            console.log(response);
+            console.log(response.data);
         });
     }, []);
 
@@ -65,11 +65,16 @@ function HomePage() {
                             {room.map((r) => (
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Card className={classes.card}>
-                                        <CardMedia
-                                            className={classes.cardMedia}
-                                            image="https://source.unsplash.com/random"
-                                            title="Image title"
-                                        />
+                                        {r.roomImages.map((i) => (
+                                            <CardMedia
+                                                component="img"
+                                                key={i.roomId}
+                                                className={classes.cardMedia}
+                                                //image={i.imagePath}
+                                                src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                //title="Image title"
+                                            />
+                                        ))}
                                         <CardContent className={classes.cardContent}>
                                             <Typography gutterBottom variant="h5" component="h2">
                                                 {r.name}

@@ -40,6 +40,15 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler, classes }) {
                 >
                     Log Out
                 </Button>
+                <Button
+                    variant="outlined"
+                    onClick={profileHandler}
+                    color="inherit"
+                    className={classes.menuButton}
+                    href="/profile"
+                >
+                    Profile
+                </Button>
             </Box>
         </>
     );
@@ -61,6 +70,15 @@ function AdminLoggedInNavbar({ email, logoutHandler, profileHandler, classes }) 
                     href="/"
                 >
                     Log Out
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={profileHandler}
+                    color="inherit"
+                    className={classes.menuButton}
+                    href="/profile"
+                >
+                    Profile
                 </Button>
             </Box>
         </>
