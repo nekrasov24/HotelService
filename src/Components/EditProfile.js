@@ -48,7 +48,7 @@ function EditProfile() {
         firstName: '',
         lastName: '',
         email: '',
-        dateOfBirth: '',
+        dateOfBirth: null,
     });
 
     const regex = new RegExp(
@@ -225,9 +225,9 @@ function EditProfile() {
                                     required
                                     fullWidth
                                     id="dateOfBirth"
-                                    name="dateofbirth"
+                                    name="dateOfBirth"
                                     type="date"
-                                    autoComplete="dateOfBirth"
+                                    //autoComplete="dateOfBirth"
                                     value={user.dateOfBirth}
                                     onChange={handleChange}
                                     helperText={formErrors.dateOfBirth}

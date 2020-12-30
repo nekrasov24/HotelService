@@ -100,6 +100,13 @@ function validateRoomType(roomType) {
     return '';
 }
 
+function validateImage(image) {
+    if (!image) {
+        return 'Images was not added';
+    }
+    return '';
+}
+
 const initialState = {
     name: '',
     number: '',
@@ -124,6 +131,7 @@ function AddRoom() {
         priceForNight: '',
         description: '',
         roomType: '',
+        image: '',
         err: '',
     });
 
@@ -135,6 +143,7 @@ function AddRoom() {
             priceForNight: '',
             description: '',
             roomType: '',
+            image: '',
         };
 
         var isValid = true;
@@ -163,6 +172,10 @@ function AddRoom() {
         if (propErrors.roomType) {
             isValid = false;
         }
+        propErrors.image = validateImage(addRequestModel.image);
+        if (propErrors.image) {
+            isValid = false;
+        }
 
         return { propErrors, isValid };
     };
@@ -189,9 +202,11 @@ function AddRoom() {
             formData.append('priceForNight', Number(addRequestModel.priceForNight));
             formData.append('description', addRequestModel.description);
             formData.append('roomType', Number(addRequestModel.roomType));
-            const file = fileRef.current.files[0];
-            if (file) {
-                formData.append('images', file, addRequestModel.image);
+            const files = fileRef.current.files;
+            if (files) {
+                for (let index = 0; index < files.length; index++) {
+                    formData.append(`images`, files[index]);
+                }
             }
 
             axios
@@ -247,7 +262,6 @@ function AddRoom() {
                         autoFocus
                         type="number"
                         onChange={handleChange}
-                        /*onBlur={handleNumberBlur}*/
                         value={addRequestModel.number}
                         helperText={formErrors.number}
                     />
@@ -264,7 +278,6 @@ function AddRoom() {
                         type="number"
                         value={addRequestModel.numberOfPeople}
                         onChange={handleChange}
-                        /*onBlur={handleNumberOfPeopleBlur}*/
                         helperText={formErrors.numberOfPeople}
                     />
                     <TextField
@@ -276,10 +289,10 @@ function AddRoom() {
                         id="priceForNight"
                         name="priceForNight"
                         label="Price For Night"
+                        autoFocus
                         type="number"
                         value={addRequestModel.priceForNight}
                         onChange={handleChange}
-                        /*onBlur={handlePriceForNightBlur}*/
                         helperText={formErrors.priceForNight}
                     />
                     <TextField
@@ -288,12 +301,11 @@ function AddRoom() {
                         margin="normal"
                         required
                         fullWidth
-                        type="t"
+                        autoFocus
                         name="description"
                         label="Description"
                         id="description"
                         onChange={handleChange}
-                        /*onBlur={handleDescriptionBlur}*/
                         multiline
                         rowsMin={4}
                         rowsMax={8}
@@ -309,6 +321,7 @@ function AddRoom() {
                         name="roomType"
                         label="Room Type"
                         id="roomType"
+                        //autoFocus
                         onChange={handleChange}
                         value={addRequestModel.roomType}
                         helperText={formErrors.roomType}
@@ -316,21 +329,23 @@ function AddRoom() {
                         <MenuItem value={1}>Standart</MenuItem>
                         <MenuItem value={2}>DeLuxe</MenuItem>
                         <MenuItem value={3}>FamilyRoom</MenuItem>
+                        <MenuItem value={4}>Apartament</MenuItem>
                     </Select>
                     <TextField
-                        //error={formErrors.description}
+                        error={formErrors.image}
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
                         name="image"
-                        //label="Description"
                         id="image"
                         type="file"
+                        autoFocus
                         onChange={handleChange}
                         value={addRequestModel.image}
                         inputRef={fileRef}
-                        //helperText={formErrors.description}
+                        inputProps={{ multiple: 'multiple' }}
+                        helperText={formErrors.image}
                     />
 
                     <Button

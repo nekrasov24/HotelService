@@ -8,6 +8,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import Button from '@material-ui/core/Button';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
 import { useHistory } from 'react-router-dom';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -60,10 +62,6 @@ function Profile() {
         }
     }, [_AuthContext.id]);
 
-    /*const editHandler = useCallback(() => {
-        history.push(generatePath('/edit-profile/:userId', _AuthContext.id));
-    }, [history, _AuthContext.id]);*/
-
     const editHandler = () => {
         history.push('/edit-profile/:userId');
     };
@@ -73,33 +71,33 @@ function Profile() {
             <React.Fragment>
                 <CssBaseline />
                 <main>
-                    <Container className={classes.cardGrid} component="main" maxWidth="md">
+                    <Container className={classes.cardGrid} maxWidth="md">
                         {/* End hero unit */}
-                        <Grid
-                            container
-                            spacing={4}
-                            className={classes.form}
-                            justify="center"
-                            alignItems="center"
-                        >
+                        <Grid container spacing={4} justify="center" alignItems="center">
                             {user && (
                                 <Grid item xs={12} sm={6} md={4}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        FirstName: {user.firstName}
-                                    </Typography>
-                                    <Typography>Last Name: {user.lastName}</Typography>
-                                    <Typography> DateOfBirth: {user.dateOfBirth}</Typography>
-                                    <Typography> Email: {user.email}</Typography>
-                                    <Typography> </Typography>
-
-                                    <Button
-                                        size="small"
-                                        color="primary"
-                                        onClick={editHandler}
-                                        //onClick={() => editHandler(_AuthContext.id)}
-                                    >
-                                        Edit
-                                    </Button>
+                                    <Card className={classes.card}>
+                                        <CardContent className={classes.cardContent}>
+                                            <Typography gutterBottom variant="h5" component="h2">
+                                                FirstName: {user.firstName}
+                                            </Typography>
+                                            <Typography>Last Name: {user.lastName}</Typography>
+                                            <Typography>
+                                                DateOfBirth:{' '}
+                                                {new Date(user.dateOfBirth)
+                                                    .toISOString()
+                                                    .slice(0, 10)}
+                                            </Typography>
+                                            <Typography> Email: {user.email}</Typography>
+                                            <Button
+                                                size="small"
+                                                color="primary"
+                                                onClick={editHandler}
+                                            >
+                                                Edit
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
                                 </Grid>
                             )}
                         </Grid>

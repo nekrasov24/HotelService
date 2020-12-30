@@ -7,6 +7,8 @@ import { useHistory } from 'react-router-dom';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
 import AdminDraw from './AdminDrawer';
 import UserDraw from './Drawer';
+import IconButton from '@material-ui/core/IconButton';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,10 +26,26 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function LoggedInNavbar({ email, logoutHandler, profileHandler, classes }) {
+function HomeIcon(props) {
+    return (
+        <SvgIcon {...props}>
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+        </SvgIcon>
+    );
+}
+
+function LoggedInNavbar({ email, logoutHandler, profileHandler, homePageHanler, classes }) {
     return (
         <>
             <UserDraw />
+            <IconButton>
+                <HomeIcon
+                    variant="outlined"
+                    onClick={homePageHanler}
+                    color="disabled"
+                    href="/homepage"
+                />
+            </IconButton>
             <Typography className={classes.title}>Hello</Typography>
             <Box mr={3}>
                 <span>{email}</span>
@@ -54,11 +72,20 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler, classes }) {
     );
 }
 
-function AdminLoggedInNavbar({ email, logoutHandler, profileHandler, classes }) {
+function AdminLoggedInNavbar({ email, logoutHandler, profileHandler, homePageHanler, classes }) {
     return (
         <>
             <AdminDraw />
+            <IconButton>
+                <HomeIcon
+                    variant="outlined"
+                    onClick={homePageHanler}
+                    color="inherit"
+                    href="/homepage"
+                />
+            </IconButton>
             <Typography className={classes.title}>Hello</Typography>
+
             <Box mr={3}>
                 <span>{email}</span>
 
@@ -127,6 +154,10 @@ function NavigationBar() {
         history.push('/Profile/frtrr');
     }, [history]);
 
+    const handleHomePage = useCallback(() => {
+        history.push('/homepage');
+    }, [history]);
+
     const logout = useCallback(() => {
         _AuthContext.clear();
     }, [_AuthContext]);
@@ -146,6 +177,7 @@ function NavigationBar() {
                 email: _AuthContext.email,
                 logoutHandler: logout,
                 profileHandler: handleGetProfile,
+                homePageHanler: handleHomePage,
                 classes,
             });
         } else {
@@ -154,6 +186,7 @@ function NavigationBar() {
                       email: _AuthContext.email,
                       logoutHandler: logout,
                       profileHandler: handleGetProfile,
+                      homePageHanler: handleHomePage,
                       classes,
                   })
                 : AnonymousNavbar({ logInHandler, signUpHandler, classes });
@@ -164,6 +197,7 @@ function NavigationBar() {
         handleGetProfile,
         logInHandler,
         signUpHandler,
+        handleHomePage,
         isAdminLoggedIn,
         classes,
     ]);

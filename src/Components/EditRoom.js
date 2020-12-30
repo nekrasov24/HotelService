@@ -12,6 +12,9 @@ import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,6 +33,26 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+    },
+
+    imageButton: {
+        position: 'relative',
+        width: '500px',
+        height: '500px',
+    },
+    imageSrc: {
+        position: 'relative',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 40%',
+    },
+    grid: {
+        alignItems: 'center',
+        display: 'flex',
+        //flexDirection: 'column',
     },
 }));
 
@@ -99,6 +122,13 @@ function validateRoomType(roomType) {
     return '';
 }
 
+function validateImage(image) {
+    if (!image) {
+        return 'Images was not added';
+    }
+    return '';
+}
+
 const initialState = {
     name: '',
     number: '',
@@ -116,6 +146,10 @@ function EditRoom() {
     const { enqueueSnackbar } = useSnackbar();
     const fileRef = useRef();
 
+    const [images, setImages] = useState([]);
+
+    const [deleteImages, setDeleteImages] = useState([]);
+
     const [formErrors, setFormErrors] = useState({
         id: '',
         name: '',
@@ -124,6 +158,7 @@ function EditRoom() {
         priceForNight: '',
         description: '',
         roomType: '',
+        image: '',
         err: '',
     });
 
@@ -136,6 +171,7 @@ function EditRoom() {
             priceForNight: '',
             description: '',
             roomType: '',
+            image: '',
         };
 
         var isValid = true;
@@ -164,6 +200,10 @@ function EditRoom() {
         if (propErrors.roomType) {
             isValid = false;
         }
+        propErrors.image = validateImage(editRequestModel.image);
+        if (propErrors.image) {
+            isValid = false;
+        }
 
         return { propErrors, isValid };
     };
@@ -175,6 +215,25 @@ function EditRoom() {
             [name]: value,
         }));
     }, []);
+
+    const deleteImageHandler = (id) => {
+        setDeleteImages((prev) => [...prev, id]);
+    };
+
+    const cancelDeleteImageHandler = (id) => {
+        setDeleteImages((prev) => prev.filter((x) => x !== id));
+    };
+
+    console.log(deleteImages);
+
+    const checkedHandler = (checked, id) => {
+        console.log(checked, id);
+        if (checked) {
+            deleteImageHandler(id);
+        } else {
+            cancelDeleteImageHandler(id);
+        }
+    };
 
     useEffect(() => {
         axios.get(`https://localhost:44344/api/rooms/${roomId}`).then((res) => {
@@ -188,6 +247,7 @@ function EditRoom() {
                 description: res.data.description,
                 roomType: res.data.roomType,
             });
+            setImages(res.data.roomImages ?? []);
             console.log(res);
         });
     }, [roomId]);
@@ -201,14 +261,20 @@ function EditRoom() {
         if (isValid) {
             let formData = new FormData();
             formData.append('name', editRequestModel.name);
+            formData.append('id', roomId);
             formData.append('number', Number(editRequestModel.number));
             formData.append('numberOfPeople', Number(editRequestModel.numberOfPeople));
             formData.append('priceForNight', Number(editRequestModel.priceForNight));
             formData.append('description', editRequestModel.description);
             formData.append('roomType', Number(editRequestModel.roomType));
-            const file = fileRef.current.files[0];
-            if (file) {
-                formData.append('images', file, editRequestModel.image);
+            for (let index = 0; index < deleteImages.length; index++) {
+                formData.append(`listImageId`, deleteImages[index]);
+            }
+            const files = fileRef.current.files;
+            if (files) {
+                for (let index = 0; index < files.length; index++) {
+                    formData.append(`images`, files[index]);
+                }
             }
             axios
                 .put('https://localhost:44344/api/editroom', formData, {
@@ -230,139 +296,215 @@ function EditRoom() {
 
     return (
         <>
-            <React.Fragment>
-                <CssBaseline />
-            </React.Fragment>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        Edit Room
-                    </Typography>
-                    <form className={classes.form} noValidate>
-                        {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-
-                        <TextField
-                            error={formErrors.name}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="name"
-                            label="Name"
-                            name="name"
-                            autoFocus
-                            onChange={handleChange}
-                            value={editRequestModel.name}
-                            helperText={formErrors.name}
-                        />
-                        <TextField
-                            error={formErrors.number}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="number"
-                            label="Number"
-                            name="number"
-                            autoFocus
-                            type="number"
-                            onChange={handleChange}
-                            value={editRequestModel.number}
-                            helperText={formErrors.number}
-                        />
-                        <TextField
-                            error={formErrors.numberOfPeople}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="numberOfPeople"
-                            label="Number Of People"
-                            name="numberOfPeople"
-                            autoFocus
-                            type="number"
-                            value={editRequestModel.numberOfPeople}
-                            onChange={handleChange}
-                            helperText={formErrors.numberOfPeople}
-                        />
-                        <TextField
-                            error={formErrors.priceForNight}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="priceForNight"
-                            name="priceForNight"
-                            autoFocus
-                            type="number"
-                            label="price For Night"
-                            value={editRequestModel.priceForNight}
-                            onChange={handleChange}
-                            helperText={formErrors.priceForNight}
-                        />
-                        <TextField
-                            error={formErrors.description}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="description"
-                            label="Description"
-                            id="description"
-                            onChange={handleChange}
-                            multiline
-                            rowsMin={4}
-                            rowsMax={8}
-                            value={editRequestModel.description}
-                            helperText={formErrors.description}
-                        />
-                        <Select
-                            error={formErrors.roomType}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="roomType"
-                            label="Room Type"
-                            id="roomType"
-                            onChange={handleChange}
-                            value={editRequestModel.roomType}
-                            helperText={formErrors.roomType}
-                        >
-                            <MenuItem value={1}>Standart</MenuItem>
-                            <MenuItem value={2}>DeLuxe</MenuItem>
-                            <MenuItem value={3}>FamilyRoom</MenuItem>
-                        </Select>
-                        <TextField
-                            //error={formErrors.description}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="image"
-                            //label="Description"
-                            id="image"
-                            type="file"
-                            onChange={handleChange}
-                            value={editRequestModel.image}
-                            inputRef={fileRef}
-                            //helperText={formErrors.description}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={editRoom}
-                        >
-                            Edit Room
-                        </Button>
-                    </form>
-                </div>
-                <Box mt={5}></Box>
-            </Container>
+            <Grid container spacing={2} className={classes.grid} justify="center">
+                <Grid item>
+                    <Container component="main" maxWidth="xs">
+                        <CssBaseline />
+                        <div className={classes.paper}>
+                            <Typography component="h1" variant="h5">
+                                Edit Room
+                            </Typography>
+                            <form className={classes.form} noValidate>
+                                {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                                <TextField
+                                    error={formErrors.name}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="name"
+                                    label="Name"
+                                    name="name"
+                                    autoFocus
+                                    onChange={handleChange}
+                                    value={editRequestModel.name}
+                                    helperText={formErrors.name}
+                                />
+                                <TextField
+                                    error={formErrors.number}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="number"
+                                    label="Number"
+                                    name="number"
+                                    autoFocus
+                                    type="number"
+                                    onChange={handleChange}
+                                    value={editRequestModel.number}
+                                    helperText={formErrors.number}
+                                />
+                                <TextField
+                                    error={formErrors.numberOfPeople}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="numberOfPeople"
+                                    label="Number Of People"
+                                    name="numberOfPeople"
+                                    autoFocus
+                                    type="number"
+                                    value={editRequestModel.numberOfPeople}
+                                    onChange={handleChange}
+                                    helperText={formErrors.numberOfPeople}
+                                />
+                                <TextField
+                                    error={formErrors.priceForNight}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="priceForNight"
+                                    name="priceForNight"
+                                    autoFocus
+                                    type="number"
+                                    label="price For Night"
+                                    value={editRequestModel.priceForNight}
+                                    onChange={handleChange}
+                                    helperText={formErrors.priceForNight}
+                                />
+                                <TextField
+                                    error={formErrors.description}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="description"
+                                    label="Description"
+                                    id="description"
+                                    onChange={handleChange}
+                                    multiline
+                                    rowsMin={4}
+                                    rowsMax={8}
+                                    value={editRequestModel.description}
+                                    helperText={formErrors.description}
+                                />
+                                <Select
+                                    error={formErrors.roomType}
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="roomType"
+                                    label="Room Type"
+                                    id="roomType"
+                                    onChange={handleChange}
+                                    value={editRequestModel.roomType}
+                                    helperText={formErrors.roomType}
+                                >
+                                    <MenuItem value={1}>Standart</MenuItem>
+                                    <MenuItem value={2}>DeLuxe</MenuItem>
+                                    <MenuItem value={3}>FamilyRoom</MenuItem>
+                                    <MenuItem value={4}>Apartament</MenuItem>
+                                </Select>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                    onClick={editRoom}
+                                >
+                                    Edit Room
+                                </Button>
+                            </form>
+                        </div>
+                        <Box mt={5}></Box>
+                    </Container>
+                </Grid>
+                <Grid item>
+                    <Container component="main" maxWidth="xs">
+                        <CssBaseline />
+                        <div className={classes.paper}>
+                            <TextField
+                                error={formErrors.image}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="image"
+                                id="image"
+                                multiple
+                                type="file"
+                                onChange={handleChange}
+                                value={editRequestModel.image}
+                                inputRef={fileRef}
+                                inputProps={{ multiple: 'multiple' }}
+                                helperText={formErrors.image}
+                            />
+                            <Card className={classes.card}>
+                                {images.map((i) => (
+                                    <>
+                                        <div className={classes.rootImage}>
+                                            <img
+                                                src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                alt={i.title}
+                                            />
+                                        </div>
+                                        <CardActions>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        size="small"
+                                                        color="primary"
+                                                        label="Delete Image"
+                                                        checked={deleteImages.includes(i.id)}
+                                                        onChange={(event) =>
+                                                            checkedHandler(
+                                                                event.target.checked,
+                                                                i.id,
+                                                            )
+                                                        }
+                                                    >
+                                                        delete
+                                                    </Checkbox>
+                                                }
+                                                label="Delete Image"
+                                            />
+                                        </CardActions>
+                                    </>
+                                ))}
+                            </Card>
+                            <Card className={classes.card}>
+                                {images.map((i) => (
+                                    <>
+                                        <div className={classes.rootImage}>
+                                            <img
+                                                src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                alt={i.title}
+                                            />
+                                        </div>
+                                        <CardActions>
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        size="small"
+                                                        color="primary"
+                                                        label="Delete Image"
+                                                        checked={deleteImages.includes(i.id)}
+                                                        onChange={(event) =>
+                                                            checkedHandler(
+                                                                event.target.checked,
+                                                                i.id,
+                                                            )
+                                                        }
+                                                    >
+                                                        delete
+                                                    </Checkbox>
+                                                }
+                                                label="Delete Image"
+                                            />
+                                        </CardActions>
+                                    </>
+                                ))}
+                            </Card>
+                        </div>
+                        <Box mt={5}></Box>
+                    </Container>
+                </Grid>
+            </Grid>
         </>
     );
 }

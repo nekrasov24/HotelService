@@ -3,13 +3,13 @@ import 'Styles/WelcomeStyle.css';
 import axios from 'axios';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { converterRoomType } from 'Services/ConverterRoomType';
+import Carousel from 'react-material-ui-carousel';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -65,16 +65,18 @@ function HomePage() {
                             {room.map((r) => (
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Card className={classes.card}>
-                                        {r.roomImages.map((i) => (
-                                            <CardMedia
-                                                component="img"
-                                                key={i.roomId}
-                                                className={classes.cardMedia}
-                                                //image={i.imagePath}
-                                                src={`data:image/jpeg;base64,${i.imagePath}`}
-                                                //title="Image title"
-                                            />
-                                        ))}
+                                        <Carousel autoPlay={false}>
+                                            {r.roomImages.map((i) => (
+                                                <div className={classes.rootImage}>
+                                                    {
+                                                        <img
+                                                            src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                            alt={i.title}
+                                                        />
+                                                    }
+                                                </div>
+                                            ))}
+                                        </Carousel>
                                         <CardContent className={classes.cardContent}>
                                             <Typography gutterBottom variant="h5" component="h2">
                                                 {r.name}
