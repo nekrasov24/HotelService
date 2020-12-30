@@ -54,6 +54,15 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         //flexDirection: 'column',
     },
+    rootImage: {
+        width: '100%',
+        objectFit: 'fill',
+    },
+    card: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+    },
 }));
 
 function validateName(name) {
@@ -442,9 +451,9 @@ function EditRoom() {
                                             <CardContent>Added Foto</CardContent>
                                             <div className={classes.rootImage}>
                                                 <img
-                                                    //src={new FileReader().eadAsDataURL(i)}
                                                     src={URL.createObjectURL(i)}
                                                     alt={i.title}
+                                                    className={classes.rootImage}
                                                 />
                                             </div>
                                         </>
@@ -453,10 +462,11 @@ function EditRoom() {
                             <Card className={classes.card}>
                                 {images.map((i) => (
                                     <>
-                                        <div className={classes.rootImage}>
+                                        <div>
                                             <img
                                                 src={`data:image/jpeg;base64,${i.imagePath}`}
                                                 alt={i.title}
+                                                className={classes.rootImage}
                                             />
                                         </div>
                                         <CardActions>
