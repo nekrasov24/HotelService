@@ -14,7 +14,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
+import { CardContent, Checkbox, FormControlLabel, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -435,37 +435,20 @@ function EditRoom() {
                                 helperText={formErrors.image}
                             />
                             <Card className={classes.card}>
-                                {images.map((i) => (
-                                    <>
-                                        <div className={classes.rootImage}>
-                                            <img
-                                                src={`data:image/jpeg;base64,${i.imagePath}`}
-                                                alt={i.title}
-                                            />
-                                        </div>
-                                        <CardActions>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        size="small"
-                                                        color="primary"
-                                                        label="Delete Image"
-                                                        checked={deleteImages.includes(i.id)}
-                                                        onChange={(event) =>
-                                                            checkedHandler(
-                                                                event.target.checked,
-                                                                i.id,
-                                                            )
-                                                        }
-                                                    >
-                                                        delete
-                                                    </Checkbox>
-                                                }
-                                                label="Delete Image"
-                                            />
-                                        </CardActions>
-                                    </>
-                                ))}
+                                {fileRef.current &&
+                                    fileRef.current.files &&
+                                    [...fileRef.current.files].map((i) => (
+                                        <>
+                                            <CardContent>Added Foto</CardContent>
+                                            <div className={classes.rootImage}>
+                                                <img
+                                                    //src={new FileReader().eadAsDataURL(i)}
+                                                    src={URL.createObjectURL(i)}
+                                                    alt={i.title}
+                                                />
+                                            </div>
+                                        </>
+                                    ))}
                             </Card>
                             <Card className={classes.card}>
                                 {images.map((i) => (
