@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(6),
     },
+    rootImage: {
+        width: '100%',
+        objectFit: 'fill',
+    },
 }));
 
 function HomePage() {
@@ -70,8 +74,9 @@ function HomePage() {
                                                 <div className={classes.rootImage}>
                                                     {
                                                         <img
-                                                            src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                            src={`https://localhost:44344/rooms${i.imagePath}`}
                                                             alt={i.title}
+                                                            className={classes.rootImage}
                                                         />
                                                     }
                                                 </div>

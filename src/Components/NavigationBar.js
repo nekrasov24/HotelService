@@ -8,7 +8,7 @@ import AuthContext from '../Contexts/AuthContext/AuthContext';
 import AdminDraw from './AdminDrawer';
 import UserDraw from './Drawer';
 import IconButton from '@material-ui/core/IconButton';
-import SvgIcon from '@material-ui/core/SvgIcon';
+import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,23 +26,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function HomeIcon(props) {
-    return (
-        <SvgIcon {...props}>
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-        </SvgIcon>
-    );
-}
-
 function LoggedInNavbar({ email, logoutHandler, profileHandler, homePageHanler, classes }) {
     return (
         <>
             <UserDraw />
             <IconButton>
                 <HomeIcon
+                    co
                     variant="outlined"
                     onClick={homePageHanler}
-                    color="disabled"
+                    htmlColor="white"
                     href="/homepage"
                 />
             </IconButton>
@@ -78,9 +71,9 @@ function AdminLoggedInNavbar({ email, logoutHandler, profileHandler, homePageHan
             <AdminDraw />
             <IconButton>
                 <HomeIcon
+                    htmlColor="white"
                     variant="outlined"
                     onClick={homePageHanler}
-                    color="inherit"
                     href="/homepage"
                 />
             </IconButton>

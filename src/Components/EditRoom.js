@@ -6,9 +6,7 @@ import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -59,16 +57,30 @@ const useStyles = makeStyles((theme) => ({
     grid: {
         alignItems: 'center',
         display: 'flex',
-        //flexDirection: 'column',
     },
     rootImage: {
         width: '100%',
     },
     card: {
-        //height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        //alignItems: 'center',
+    },
+    tipography: {
+        marginTop: '5%',
+        alignItems: 'center',
+        display: 'flex',
+    },
+    item: {
+        //alignItems: 'flex-start',
+        //alignContent: 'flex-start',
+        //display: 'flex-start',
+    },
+    mainGrid: {
+        alignItems: 'flex-start',
+    },
+    divider: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
     },
 }));
 
@@ -138,13 +150,6 @@ function validateRoomType(roomType) {
     return '';
 }
 
-function validateImage(image) {
-    if (!image) {
-        return 'Images was not added';
-    }
-    return '';
-}
-
 const initialState = {
     name: '',
     number: '',
@@ -174,7 +179,6 @@ function EditRoom() {
         priceForNight: '',
         description: '',
         roomType: '',
-        image: '',
         err: '',
     });
 
@@ -187,7 +191,6 @@ function EditRoom() {
             priceForNight: '',
             description: '',
             roomType: '',
-            image: '',
         };
 
         var isValid = true;
@@ -214,10 +217,6 @@ function EditRoom() {
         }
         propErrors.roomType = validateRoomType(editRequestModel.roomType);
         if (propErrors.roomType) {
-            isValid = false;
-        }
-        propErrors.image = validateImage(editRequestModel.image);
-        if (propErrors.image) {
             isValid = false;
         }
 
@@ -312,125 +311,122 @@ function EditRoom() {
 
     return (
         <>
-            <Grid container spacing={2} className={classes.grid} justify="center">
-                <Grid item xs={6}>
-                    <Container component="main" maxWidth="xs">
-                        <CssBaseline />
-                        <div className={classes.paper}>
-                            <Typography component="h1" variant="h5">
-                                Edit Room
-                            </Typography>
-                            <form className={classes.form} noValidate>
-                                {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                                <TextField
-                                    error={formErrors.name}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="name"
-                                    label="Name"
-                                    name="name"
-                                    autoFocus
-                                    onChange={handleChange}
-                                    value={editRequestModel.name}
-                                    helperText={formErrors.name}
-                                />
-                                <TextField
-                                    error={formErrors.number}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="number"
-                                    label="Number"
-                                    name="number"
-                                    autoFocus
-                                    type="number"
-                                    onChange={handleChange}
-                                    value={editRequestModel.number}
-                                    helperText={formErrors.number}
-                                />
-                                <TextField
-                                    error={formErrors.numberOfPeople}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="numberOfPeople"
-                                    label="Number Of People"
-                                    name="numberOfPeople"
-                                    autoFocus
-                                    type="number"
-                                    value={editRequestModel.numberOfPeople}
-                                    onChange={handleChange}
-                                    helperText={formErrors.numberOfPeople}
-                                />
-                                <TextField
-                                    error={formErrors.priceForNight}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="priceForNight"
-                                    name="priceForNight"
-                                    autoFocus
-                                    type="number"
-                                    label="price For Night"
-                                    value={editRequestModel.priceForNight}
-                                    onChange={handleChange}
-                                    helperText={formErrors.priceForNight}
-                                />
-                                <TextField
-                                    error={formErrors.description}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="description"
-                                    label="Description"
-                                    id="description"
-                                    onChange={handleChange}
-                                    multiline
-                                    rowsMin={4}
-                                    rowsMax={8}
-                                    value={editRequestModel.description}
-                                    helperText={formErrors.description}
-                                />
-                                <Select
-                                    error={formErrors.roomType}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    name="roomType"
-                                    label="Room Type"
-                                    id="roomType"
-                                    onChange={handleChange}
-                                    value={editRequestModel.roomType}
-                                    helperText={formErrors.roomType}
-                                >
-                                    <MenuItem value={1}>Standart</MenuItem>
-                                    <MenuItem value={2}>DeLuxe</MenuItem>
-                                    <MenuItem value={3}>FamilyRoom</MenuItem>
-                                    <MenuItem value={4}>Apartament</MenuItem>
-                                </Select>
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
-                                    onClick={editRoom}
-                                >
-                                    Edit Room
-                                </Button>
-                            </form>
-                        </div>
-                        <Box mt={5}></Box>
-                    </Container>
+            <Grid container spacing={3} className={classes.mainGrid} justify="center">
+                <Grid item xs={12} className={classes.tipography} justify="center">
+                    <Typography component="h1" variant="h5">
+                        Edit Room
+                    </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={12} sm={6} md={4} className={classes.item}>
+                    <CssBaseline />
+                    <form className={classes.form} noValidate>
+                        {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                        <TextField
+                            error={formErrors.name}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            name="name"
+                            autoFocus
+                            onChange={handleChange}
+                            value={editRequestModel.name}
+                            helperText={formErrors.name}
+                        />
+                        <TextField
+                            error={formErrors.number}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="number"
+                            label="Number"
+                            name="number"
+                            autoFocus
+                            type="number"
+                            onChange={handleChange}
+                            value={editRequestModel.number}
+                            helperText={formErrors.number}
+                        />
+                        <TextField
+                            error={formErrors.numberOfPeople}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="numberOfPeople"
+                            label="Number Of People"
+                            name="numberOfPeople"
+                            autoFocus
+                            type="number"
+                            value={editRequestModel.numberOfPeople}
+                            onChange={handleChange}
+                            helperText={formErrors.numberOfPeople}
+                        />
+                        <TextField
+                            error={formErrors.priceForNight}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="priceForNight"
+                            name="priceForNight"
+                            autoFocus
+                            type="number"
+                            label="price For Night"
+                            value={editRequestModel.priceForNight}
+                            onChange={handleChange}
+                            helperText={formErrors.priceForNight}
+                        />
+                        <TextField
+                            error={formErrors.description}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="description"
+                            label="Description"
+                            id="description"
+                            onChange={handleChange}
+                            multiline
+                            rowsMin={4}
+                            rowsMax={8}
+                            value={editRequestModel.description}
+                            helperText={formErrors.description}
+                        />
+                        <Select
+                            error={formErrors.roomType}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="roomType"
+                            label="Room Type"
+                            id="roomType"
+                            onChange={handleChange}
+                            value={editRequestModel.roomType}
+                            helperText={formErrors.roomType}
+                        >
+                            <MenuItem value={1}>Standart</MenuItem>
+                            <MenuItem value={2}>DeLuxe</MenuItem>
+                            <MenuItem value={3}>FamilyRoom</MenuItem>
+                            <MenuItem value={4}>Apartament</MenuItem>
+                        </Select>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={editRoom}
+                        >
+                            Edit Room
+                        </Button>
+                    </form>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
                     <Grid container spacing={2} direction="column">
                         <Grid item>
                             <TextField
@@ -455,7 +451,7 @@ function EditRoom() {
                                 {fileRef.current &&
                                     fileRef.current.files &&
                                     [...fileRef.current.files].map((i) => (
-                                        <Grid item sm={6}>
+                                        <Grid item xs={6}>
                                             <Card className={classes.card}>
                                                 <CardContent>Added Foto</CardContent>
 
@@ -469,10 +465,10 @@ function EditRoom() {
                                         </Grid>
                                     ))}
                             </Grid>
-
+                            <Divider className={classes.divider} />
                             <Grid container spacing={2}>
                                 {images.map((i) => (
-                                    <Grid item sm={6}>
+                                    <Grid item xs={6}>
                                         <Card className={classes.card}>
                                             <CardMedia
                                                 className={classes.rootImage}
