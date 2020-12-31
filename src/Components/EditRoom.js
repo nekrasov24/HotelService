@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
     },
 }));
 
@@ -449,26 +450,24 @@ function EditRoom() {
                                     [...fileRef.current.files].map((i) => (
                                         <>
                                             <CardContent>Added Foto</CardContent>
-                                            <div className={classes.rootImage}>
-                                                <img
-                                                    src={URL.createObjectURL(i)}
-                                                    alt={i.title}
-                                                    className={classes.rootImage}
-                                                />
-                                            </div>
+
+                                            <img
+                                                src={URL.createObjectURL(i)}
+                                                alt={i.title}
+                                                className={classes.rootImage}
+                                            />
                                         </>
                                     ))}
                             </Card>
                             <Card className={classes.card}>
                                 {images.map((i) => (
                                     <>
-                                        <div>
-                                            <img
-                                                src={`data:image/jpeg;base64,${i.imagePath}`}
-                                                alt={i.title}
-                                                className={classes.rootImage}
-                                            />
-                                        </div>
+                                        <img
+                                            src={`https://localhost:44344/rooms${i.imagePath}`}
+                                            alt={i.title}
+                                            className={classes.rootImage}
+                                        />
+
                                         <CardActions>
                                             <FormControlLabel
                                                 control={

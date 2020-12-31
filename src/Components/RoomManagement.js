@@ -123,7 +123,8 @@ function RoomManagement() {
                                                 <div>
                                                     {
                                                         <img
-                                                            src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                            //src={`data:image/jpeg;base64,${i.imagePath}`}
+                                                            src={`https://localhost:44344/rooms${i.imagePath}`}
                                                             alt={i.title}
                                                             className={classes.rootImage}
                                                         />
