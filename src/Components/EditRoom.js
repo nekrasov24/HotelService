@@ -14,7 +14,14 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { CardContent, Checkbox, FormControlLabel, Grid } from '@material-ui/core';
+import {
+    CardContent,
+    CardMedia,
+    Checkbox,
+    Divider,
+    FormControlLabel,
+    Grid,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -56,13 +63,12 @@ const useStyles = makeStyles((theme) => ({
     },
     rootImage: {
         width: '100%',
-        objectFit: 'fill',
     },
     card: {
-        height: '100%',
+        //height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        //alignItems: 'center',
     },
 }));
 
@@ -307,7 +313,7 @@ function EditRoom() {
     return (
         <>
             <Grid container spacing={2} className={classes.grid} justify="center">
-                <Grid item>
+                <Grid item xs={6}>
                     <Container component="main" maxWidth="xs">
                         <CssBaseline />
                         <div className={classes.paper}>
@@ -424,10 +430,9 @@ function EditRoom() {
                         <Box mt={5}></Box>
                     </Container>
                 </Grid>
-                <Grid item>
-                    <Container component="main" maxWidth="xs">
-                        <CssBaseline />
-                        <div className={classes.paper}>
+                <Grid item xs={3}>
+                    <Grid container spacing={2} direction="column">
+                        <Grid item>
                             <TextField
                                 error={formErrors.image}
                                 variant="outlined"
@@ -444,57 +449,65 @@ function EditRoom() {
                                 inputProps={{ multiple: 'multiple' }}
                                 helperText={formErrors.image}
                             />
-                            <Card className={classes.card}>
+                        </Grid>
+                        <Grid item>
+                            <Grid container spacing={2}>
                                 {fileRef.current &&
                                     fileRef.current.files &&
                                     [...fileRef.current.files].map((i) => (
-                                        <>
-                                            <CardContent>Added Foto</CardContent>
+                                        <Grid item sm={6}>
+                                            <Card className={classes.card}>
+                                                <CardContent>Added Foto</CardContent>
 
-                                            <img
-                                                src={URL.createObjectURL(i)}
-                                                alt={i.title}
-                                                className={classes.rootImage}
-                                            />
-                                        </>
+                                                <CardMedia
+                                                    className={classes.rootImage}
+                                                    component="img"
+                                                    image={URL.createObjectURL(i)}
+                                                    title="Paella dish"
+                                                />
+                                            </Card>
+                                        </Grid>
                                     ))}
-                            </Card>
-                            <Card className={classes.card}>
-                                {images.map((i) => (
-                                    <>
-                                        <img
-                                            src={`https://localhost:44344/rooms${i.imagePath}`}
-                                            alt={i.title}
-                                            className={classes.rootImage}
-                                        />
+                            </Grid>
 
-                                        <CardActions>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        size="small"
-                                                        color="primary"
-                                                        label="Delete Image"
-                                                        checked={deleteImages.includes(i.id)}
-                                                        onChange={(event) =>
-                                                            checkedHandler(
-                                                                event.target.checked,
-                                                                i.id,
-                                                            )
-                                                        }
-                                                    >
-                                                        delete
-                                                    </Checkbox>
-                                                }
-                                                label="Delete Image"
+                            <Grid container spacing={2}>
+                                {images.map((i) => (
+                                    <Grid item sm={6}>
+                                        <Card className={classes.card}>
+                                            <CardMedia
+                                                className={classes.rootImage}
+                                                component="img"
+                                                image={`https://localhost:44344/rooms${i.imagePath}`}
+                                                title="Paella dish"
                                             />
-                                        </CardActions>
-                                    </>
+
+                                            <CardActions>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            size="small"
+                                                            color="primary"
+                                                            label="Delete Image"
+                                                            checked={deleteImages.includes(i.id)}
+                                                            onChange={(event) =>
+                                                                checkedHandler(
+                                                                    event.target.checked,
+                                                                    i.id,
+                                                                )
+                                                            }
+                                                        >
+                                                            delete
+                                                        </Checkbox>
+                                                    }
+                                                    label="Delete Image"
+                                                />
+                                            </CardActions>
+                                        </Card>
+                                    </Grid>
                                 ))}
-                            </Card>
-                        </div>
-                        <Box mt={5}></Box>
-                    </Container>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </>
