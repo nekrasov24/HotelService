@@ -12,6 +12,8 @@ import Select from '@material-ui/core/Select';
 import { useSnackbar } from 'notistack';
 import MenuItem from '@material-ui/core/MenuItem';
 import { addRoomEndpoint } from 'utils/apiPathes';
+import { Grid } from '@material-ui/core';
+import ImageUploader from 'react-images-upload';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,6 +32,49 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+        marginLeft: 'auto',
+    },
+    imageButton: {
+        position: 'relative',
+        width: '500px',
+        height: '500px',
+    },
+    imageSrc: {
+        position: 'relative',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 40%',
+    },
+    grid: {
+        alignItems: 'center',
+        display: 'flex',
+    },
+    rootImage: {
+        width: '100%',
+    },
+    card: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    tipography: {
+        marginTop: '5%',
+        alignItems: 'center',
+        display: 'flex',
+    },
+    item: {},
+    mainGrid: {
+        alignItems: 'flex-start',
+    },
+    divider: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+    },
+    button: {
+        alignItems: 'center',
+        display: 'flex',
     },
 }));
 
@@ -100,13 +145,6 @@ function validateRoomType(roomType) {
     return '';
 }
 
-function validateImage(image) {
-    if (!image) {
-        return 'Images was not added';
-    }
-    return '';
-}
-
 const initialState = {
     name: '',
     number: '',
@@ -122,7 +160,8 @@ function AddRoom() {
     const history = useHistory();
     const [addRequestModel, setAddRequestModel] = useState(initialState);
     const { enqueueSnackbar } = useSnackbar();
-    const fileRef = useRef();
+    //const fileRef = useRef();
+    const [addImage, setAddImage] = useState({ pictures: [] });
 
     const [formErrors, setFormErrors] = useState({
         name: '',
@@ -172,12 +211,15 @@ function AddRoom() {
         if (propErrors.roomType) {
             isValid = false;
         }
-        propErrors.image = validateImage(addRequestModel.image);
-        if (propErrors.image) {
-            isValid = false;
-        }
 
         return { propErrors, isValid };
+    };
+
+    const addImageHandler = (file) => {
+        setAddImage((pictures) => ({
+            ...pictures,
+            pictures: file,
+        }));
     };
 
     const handleChange = useCallback((e) => {
@@ -202,10 +244,10 @@ function AddRoom() {
             formData.append('priceForNight', Number(addRequestModel.priceForNight));
             formData.append('description', addRequestModel.description);
             formData.append('roomType', Number(addRequestModel.roomType));
-            const files = fileRef.current.files;
-            if (files) {
-                for (let index = 0; index < files.length; index++) {
-                    formData.append(`images`, files[index]);
+
+            if (addImage.pictures) {
+                for (let index = 0; index < addImage.pictures.length; index++) {
+                    formData.append(`images`, addImage.pictures[index]);
                 }
             }
 
@@ -228,139 +270,270 @@ function AddRoom() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Typography component="h1" variant="h5">
-                    Add new Room
-                </Typography>
-                <form className={classes.form} noValidate>
-                    {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                    <TextField
-                        error={formErrors.name}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="name"
-                        label="Name"
-                        name="name"
-                        autoFocus
-                        onChange={handleChange}
-                        value={addRequestModel.name}
-                        helperText={formErrors.name}
-                    />
-                    <TextField
-                        error={formErrors.number}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="number"
-                        label="Number"
-                        name="number"
-                        autoFocus
-                        type="number"
-                        onChange={handleChange}
-                        value={addRequestModel.number}
-                        helperText={formErrors.number}
-                    />
-                    <TextField
-                        error={formErrors.numberOfPeople}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="numberOfPeople"
-                        label="Number Of People"
-                        name="numberOfPeople"
-                        autoFocus
-                        type="number"
-                        value={addRequestModel.numberOfPeople}
-                        onChange={handleChange}
-                        helperText={formErrors.numberOfPeople}
-                    />
-                    <TextField
-                        error={formErrors.priceForNight}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="priceForNight"
-                        name="priceForNight"
-                        label="Price For Night"
-                        autoFocus
-                        type="number"
-                        value={addRequestModel.priceForNight}
-                        onChange={handleChange}
-                        helperText={formErrors.priceForNight}
-                    />
-                    <TextField
-                        error={formErrors.description}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        autoFocus
-                        name="description"
-                        label="Description"
-                        id="description"
-                        onChange={handleChange}
-                        multiline
-                        rowsMin={4}
-                        rowsMax={8}
-                        value={addRequestModel.description}
-                        helperText={formErrors.description}
-                    />
-                    <Select
-                        error={formErrors.roomType}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="roomType"
-                        label="Room Type"
-                        id="roomType"
-                        //autoFocus
-                        onChange={handleChange}
-                        value={addRequestModel.roomType}
-                        helperText={formErrors.roomType}
-                    >
-                        <MenuItem value={1}>Standart</MenuItem>
-                        <MenuItem value={2}>DeLuxe</MenuItem>
-                        <MenuItem value={3}>FamilyRoom</MenuItem>
-                        <MenuItem value={4}>Apartament</MenuItem>
-                    </Select>
-                    <TextField
-                        error={formErrors.image}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="image"
-                        id="image"
-                        type="file"
-                        autoFocus
-                        onChange={handleChange}
-                        value={addRequestModel.image}
-                        inputRef={fileRef}
-                        inputProps={{ multiple: 'multiple' }}
-                        helperText={formErrors.image}
-                    />
+        <>
+            <Container maxWidth="xl">
+                <Grid container spacing={3} className={classes.mainGrid} justify="center">
+                    <Grid item xs={12} className={classes.tipography} justify="center">
+                        <Typography component="h1" variant="h5">
+                            Add Room
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} className={classes.button} alignContent="flex-start">
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={addRoom}
+                        >
+                            Save
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} className={classes.item}>
+                        <CssBaseline />
+                        <form className={classes.form} noValidate>
+                            {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                            <TextField
+                                error={formErrors.name}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="name"
+                                label="Name"
+                                name="name"
+                                autoFocus
+                                onChange={handleChange}
+                                value={addRequestModel.name}
+                                helperText={formErrors.name}
+                            />
+                            <TextField
+                                error={formErrors.number}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="number"
+                                label="Number"
+                                name="number"
+                                autoFocus
+                                type="number"
+                                onChange={handleChange}
+                                value={addRequestModel.number}
+                                helperText={formErrors.number}
+                            />
+                            <TextField
+                                error={formErrors.numberOfPeople}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="numberOfPeople"
+                                label="Number Of People"
+                                name="numberOfPeople"
+                                autoFocus
+                                type="number"
+                                value={addRequestModel.numberOfPeople}
+                                onChange={handleChange}
+                                helperText={formErrors.numberOfPeople}
+                            />
+                            <TextField
+                                error={formErrors.priceForNight}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="priceForNight"
+                                name="priceForNight"
+                                autoFocus
+                                type="number"
+                                label="price For Night"
+                                value={addRequestModel.priceForNight}
+                                onChange={handleChange}
+                                helperText={formErrors.priceForNight}
+                            />
+                            <TextField
+                                error={formErrors.description}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="description"
+                                label="Description"
+                                id="description"
+                                onChange={handleChange}
+                                multiline
+                                rowsMin={4}
+                                rowsMax={8}
+                                value={addRequestModel.description}
+                                helperText={formErrors.description}
+                            />
+                            <Select
+                                error={formErrors.roomType}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="roomType"
+                                label="Room Type"
+                                id="roomType"
+                                onChange={handleChange}
+                                value={addRequestModel.roomType}
+                                helperText={formErrors.roomType}
+                            >
+                                <MenuItem value={1}>Standart</MenuItem>
+                                <MenuItem value={2}>DeLuxe</MenuItem>
+                                <MenuItem value={3}>FamilyRoom</MenuItem>
+                                <MenuItem value={4}>Apartament</MenuItem>
+                            </Select>
+                        </form>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <ImageUploader
+                            withIcon={true}
+                            imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                            maxFileSize={5242880}
+                            onChange={addImageHandler}
+                            withPreview
+                        />
+                    </Grid>
+                </Grid>
+            </Container>
 
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={addRoom}
-                    >
-                        Add Room
-                    </Button>
-                </form>
-            </div>
-        </Container>
+            {/*<Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <div className={classes.paper}>
+                    <Typography component="h1" variant="h5">
+                        Add new Room
+                    </Typography>
+                    <form className={classes.form} noValidate>
+                        {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
+                        <TextField
+                            error={formErrors.name}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            name="name"
+                            autoFocus
+                            onChange={handleChange}
+                            value={addRequestModel.name}
+                            helperText={formErrors.name}
+                        />
+                        <TextField
+                            error={formErrors.number}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="number"
+                            label="Number"
+                            name="number"
+                            autoFocus
+                            type="number"
+                            onChange={handleChange}
+                            value={addRequestModel.number}
+                            helperText={formErrors.number}
+                        />
+                        <TextField
+                            error={formErrors.numberOfPeople}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="numberOfPeople"
+                            label="Number Of People"
+                            name="numberOfPeople"
+                            autoFocus
+                            type="number"
+                            value={addRequestModel.numberOfPeople}
+                            onChange={handleChange}
+                            helperText={formErrors.numberOfPeople}
+                        />
+                        <TextField
+                            error={formErrors.priceForNight}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="priceForNight"
+                            name="priceForNight"
+                            label="Price For Night"
+                            autoFocus
+                            type="number"
+                            value={addRequestModel.priceForNight}
+                            onChange={handleChange}
+                            helperText={formErrors.priceForNight}
+                        />
+                        <TextField
+                            error={formErrors.description}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            autoFocus
+                            name="description"
+                            label="Description"
+                            id="description"
+                            onChange={handleChange}
+                            multiline
+                            rowsMin={4}
+                            rowsMax={8}
+                            value={addRequestModel.description}
+                            helperText={formErrors.description}
+                        />
+                        <Select
+                            error={formErrors.roomType}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="roomType"
+                            label="Room Type"
+                            id="roomType"
+                            //autoFocus
+                            onChange={handleChange}
+                            value={addRequestModel.roomType}
+                            helperText={formErrors.roomType}
+                        >
+                            <MenuItem value={1}>Standart</MenuItem>
+                            <MenuItem value={2}>DeLuxe</MenuItem>
+                            <MenuItem value={3}>FamilyRoom</MenuItem>
+                            <MenuItem value={4}>Apartament</MenuItem>
+                        </Select>
+                        <TextField
+                            error={formErrors.image}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="image"
+                            id="image"
+                            type="file"
+                            autoFocus
+                            onChange={handleChange}
+                            value={addRequestModel.image}
+                            inputRef={fileRef}
+                            inputProps={{ multiple: 'multiple' }}
+                            helperText={formErrors.image}
+                        />
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            onClick={addRoom}
+                        >
+                            Add Room
+                        </Button>
+                    </form>
+                </div>
+    </Container>*/}
+        </>
     );
 }
 

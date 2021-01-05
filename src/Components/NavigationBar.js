@@ -32,7 +32,6 @@ function LoggedInNavbar({ email, logoutHandler, profileHandler, homePageHanler, 
             <UserDraw />
             <IconButton>
                 <HomeIcon
-                    co
                     variant="outlined"
                     onClick={homePageHanler}
                     htmlColor="white"

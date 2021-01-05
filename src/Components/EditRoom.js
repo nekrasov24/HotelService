@@ -11,12 +11,15 @@ import Alert from '@material-ui/lab/Alert';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
+import FileInput from 'Services/FileInput';
 import CardActions from '@material-ui/core/CardActions';
+import ImageUploader from 'react-images-upload';
+import Cropper from 'react-cropper';
 import {
     CardContent,
     CardMedia,
     Checkbox,
-    Divider,
+    Container,
     FormControlLabel,
     Grid,
 } from '@material-ui/core';
@@ -38,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
+        marginLeft: 'auto',
     },
 
     imageButton: {
@@ -70,17 +74,17 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         display: 'flex',
     },
-    item: {
-        //alignItems: 'flex-start',
-        //alignContent: 'flex-start',
-        //display: 'flex-start',
-    },
+    item: {},
     mainGrid: {
         alignItems: 'flex-start',
     },
     divider: {
         marginTop: theme.spacing(3),
         marginBottom: theme.spacing(3),
+    },
+    button: {
+        alignItems: 'center',
+        display: 'flex',
     },
 }));
 
@@ -165,7 +169,8 @@ function EditRoom() {
     const [room, setRoom] = useState();
     const [editRequestModel, setEditRequestModel] = useState(initialState);
     const { enqueueSnackbar } = useSnackbar();
-    const fileRef = useRef();
+    //const fileRef = useRef();
+    const [addImage, setAddImage] = useState({ pictures: [] });
 
     const [images, setImages] = useState([]);
 
@@ -219,6 +224,10 @@ function EditRoom() {
         if (propErrors.roomType) {
             isValid = false;
         }
+        propErrors.roomType = validateRoomType(editRequestModel.roomType);
+        if (propErrors.roomType) {
+            isValid = false;
+        }
 
         return { propErrors, isValid };
     };
@@ -230,6 +239,19 @@ function EditRoom() {
             [name]: value,
         }));
     }, []);
+
+    const addImageHandler = (file) => {
+        setAddImage((pictures) => ({
+            ...pictures,
+            pictures: file,
+        }));
+    };
+
+    const cancelAddImageHandler = (file) => {
+        console.log(file);
+        setAddImage((prev) => ({ pictures: prev.pictures.filter((x) => x !== file) }));
+        console.log(file);
+    };
 
     const deleteImageHandler = (id) => {
         setDeleteImages((prev) => [...prev, id]);
@@ -285,10 +307,9 @@ function EditRoom() {
             for (let index = 0; index < deleteImages.length; index++) {
                 formData.append(`listImageId`, deleteImages[index]);
             }
-            const files = fileRef.current.files;
-            if (files) {
-                for (let index = 0; index < files.length; index++) {
-                    formData.append(`images`, files[index]);
+            if (addImage.pictures) {
+                for (let index = 0; index < addImage.pictures.length; index++) {
+                    formData.append(`images`, addImage.pictures[index]);
                 }
             }
             axios
@@ -310,12 +331,23 @@ function EditRoom() {
     };
 
     return (
-        <>
+        <Container maxWidth="xl">
             <Grid container spacing={3} className={classes.mainGrid} justify="center">
                 <Grid item xs={12} className={classes.tipography} justify="center">
                     <Typography component="h1" variant="h5">
                         Edit Room
                     </Typography>
+                </Grid>
+                <Grid item xs={12} className={classes.button} alignContent="flex-start">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={editRoom}
+                    >
+                        Save
+                    </Button>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4} className={classes.item}>
                     <CssBaseline />
@@ -414,99 +446,54 @@ function EditRoom() {
                             <MenuItem value={3}>FamilyRoom</MenuItem>
                             <MenuItem value={4}>Apartament</MenuItem>
                         </Select>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={editRoom}
-                        >
-                            Edit Room
-                        </Button>
                     </form>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
-                    <Grid container spacing={2} direction="column">
-                        <Grid item>
-                            <TextField
-                                error={formErrors.image}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="image"
-                                id="image"
-                                multiple
-                                type="file"
-                                onChange={handleChange}
-                                value={editRequestModel.image}
-                                inputRef={fileRef}
-                                inputProps={{ multiple: 'multiple' }}
-                                helperText={formErrors.image}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <Grid container spacing={2}>
-                                {fileRef.current &&
-                                    fileRef.current.files &&
-                                    [...fileRef.current.files].map((i) => (
-                                        <Grid item xs={6}>
-                                            <Card className={classes.card}>
-                                                <CardContent>Added Foto</CardContent>
+                    <ImageUploader
+                        withIcon={true}
+                        imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                        maxFileSize={5242880}
+                        onChange={addImageHandler}
+                        withPreview
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                    <Grid container spacing={2}>
+                        {images.map((i) => (
+                            <Grid item xs={6}>
+                                <Card className={classes.card}>
+                                    <CardMedia
+                                        className={classes.rootImage}
+                                        component="img"
+                                        image={`https://localhost:44344/rooms${i.imagePath}`}
+                                        title="Paella dish"
+                                    />
 
-                                                <CardMedia
-                                                    className={classes.rootImage}
-                                                    component="img"
-                                                    image={URL.createObjectURL(i)}
-                                                    title="Paella dish"
-                                                />
-                                            </Card>
-                                        </Grid>
-                                    ))}
-                            </Grid>
-                            <Divider className={classes.divider} />
-                            <Grid container spacing={2}>
-                                {images.map((i) => (
-                                    <Grid item xs={6}>
-                                        <Card className={classes.card}>
-                                            <CardMedia
-                                                className={classes.rootImage}
-                                                component="img"
-                                                image={`https://localhost:44344/rooms${i.imagePath}`}
-                                                title="Paella dish"
-                                            />
-
-                                            <CardActions>
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            size="small"
-                                                            color="primary"
-                                                            label="Delete Image"
-                                                            checked={deleteImages.includes(i.id)}
-                                                            onChange={(event) =>
-                                                                checkedHandler(
-                                                                    event.target.checked,
-                                                                    i.id,
-                                                                )
-                                                            }
-                                                        >
-                                                            delete
-                                                        </Checkbox>
-                                                    }
+                                    <CardActions>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    size="small"
+                                                    color="primary"
                                                     label="Delete Image"
-                                                />
-                                            </CardActions>
-                                        </Card>
-                                    </Grid>
-                                ))}
+                                                    checked={deleteImages.includes(i.id)}
+                                                    onChange={(event) =>
+                                                        checkedHandler(event.target.checked, i.id)
+                                                    }
+                                                >
+                                                    delete
+                                                </Checkbox>
+                                            }
+                                            label="Delete Image"
+                                        />
+                                    </CardActions>
+                                </Card>
                             </Grid>
-                        </Grid>
+                        ))}
                     </Grid>
                 </Grid>
             </Grid>
-        </>
+        </Container>
     );
 }
 
