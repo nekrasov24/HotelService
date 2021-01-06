@@ -136,7 +136,8 @@ function RoomManagement() {
                                             <Typography gutterBottom variant="h5" component="h2">
                                                 Name: {r.name}
                                             </Typography>
-                                            <Typography>description: {r.description}</Typography>
+                                            <Typography>Number: {r.number}</Typography>
+                                            <Typography>Description: {r.description}</Typography>
                                             <Typography>
                                                 {' '}
                                                 Number Of People: {r.numberOfPeople}

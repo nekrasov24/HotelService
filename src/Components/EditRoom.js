@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,18 +11,9 @@ import Alert from '@material-ui/lab/Alert';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Card from '@material-ui/core/Card';
-import FileInput from 'Services/FileInput';
 import CardActions from '@material-ui/core/CardActions';
 import ImageUploader from 'react-images-upload';
-import Cropper from 'react-cropper';
-import {
-    CardContent,
-    CardMedia,
-    Checkbox,
-    Container,
-    FormControlLabel,
-    Grid,
-} from '@material-ui/core';
+import { CardMedia, Checkbox, Container, FormControlLabel, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -42,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
         marginLeft: 'auto',
+        width: '130px',
     },
 
     imageButton: {
@@ -169,7 +161,7 @@ function EditRoom() {
     const [room, setRoom] = useState();
     const [editRequestModel, setEditRequestModel] = useState(initialState);
     const { enqueueSnackbar } = useSnackbar();
-    //const fileRef = useRef();
+
     const [addImage, setAddImage] = useState({ pictures: [] });
 
     const [images, setImages] = useState([]);
@@ -451,7 +443,7 @@ function EditRoom() {
                 <Grid item xs={12} sm={6} md={4}>
                     <ImageUploader
                         withIcon={true}
-                        imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                        imgExtension={['.jpg', '.jpeg', '.png']}
                         maxFileSize={5242880}
                         onChange={addImageHandler}
                         withPreview

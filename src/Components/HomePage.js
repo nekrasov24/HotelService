@@ -84,9 +84,10 @@ function HomePage() {
                                         </Carousel>
                                         <CardContent className={classes.cardContent}>
                                             <Typography gutterBottom variant="h5" component="h2">
-                                                {r.name}
+                                                Name: {r.name}
                                             </Typography>
-                                            <Typography>{r.description}</Typography>
+                                            <Typography>Number: {r.number}</Typography>
+                                            <Typography>Description: {r.description}</Typography>
                                             <Typography>
                                                 {' '}
                                                 Number Of People: {r.numberOfPeople}

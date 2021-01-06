@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
         marginLeft: 'auto',
+        width: '130px',
     },
     imageButton: {
         position: 'relative',
@@ -115,7 +116,6 @@ function validateNumberOfPeople(numberOfPeople) {
 }
 
 function validatePriceForNight(priceForNight) {
-    console.log(priceForNight);
     if (!priceForNight) {
         return 'Price For Night is required';
     }
@@ -140,7 +140,14 @@ function validateDescription(description) {
 
 function validateRoomType(roomType) {
     if (!roomType) {
-        return 'Room Type is required';
+        return 'Image is required';
+    }
+    return '';
+}
+
+function validateImages(pictures) {
+    if (!pictures) {
+        return 'Image is required';
     }
     return '';
 }
@@ -152,7 +159,6 @@ const initialState = {
     priceForNight: '',
     description: '',
     roomType: '',
-    image: '',
 };
 
 function AddRoom() {
@@ -160,7 +166,6 @@ function AddRoom() {
     const history = useHistory();
     const [addRequestModel, setAddRequestModel] = useState(initialState);
     const { enqueueSnackbar } = useSnackbar();
-    //const fileRef = useRef();
     const [addImage, setAddImage] = useState({ pictures: [] });
 
     const [formErrors, setFormErrors] = useState({
@@ -209,6 +214,11 @@ function AddRoom() {
         }
         propErrors.roomType = validateRoomType(addRequestModel.roomType);
         if (propErrors.roomType) {
+            isValid = false;
+        }
+
+        propErrors.image = validateImages(addImage.pictures.length);
+        if (!addImage.pictures.length) {
             isValid = false;
         }
 
@@ -389,9 +399,10 @@ function AddRoom() {
                         </form>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4}>
+                        {formErrors.image && <Alert severity="error">{formErrors.image}</Alert>}
                         <ImageUploader
                             withIcon={true}
-                            imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                            imgExtension={['.jpg', '.jpeg', '.png']}
                             maxFileSize={5242880}
                             onChange={addImageHandler}
                             withPreview
@@ -399,140 +410,6 @@ function AddRoom() {
                     </Grid>
                 </Grid>
             </Container>
-
-            {/*<Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        Add new Room
-                    </Typography>
-                    <form className={classes.form} noValidate>
-                        {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
-                        <TextField
-                            error={formErrors.name}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="name"
-                            label="Name"
-                            name="name"
-                            autoFocus
-                            onChange={handleChange}
-                            value={addRequestModel.name}
-                            helperText={formErrors.name}
-                        />
-                        <TextField
-                            error={formErrors.number}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="number"
-                            label="Number"
-                            name="number"
-                            autoFocus
-                            type="number"
-                            onChange={handleChange}
-                            value={addRequestModel.number}
-                            helperText={formErrors.number}
-                        />
-                        <TextField
-                            error={formErrors.numberOfPeople}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="numberOfPeople"
-                            label="Number Of People"
-                            name="numberOfPeople"
-                            autoFocus
-                            type="number"
-                            value={addRequestModel.numberOfPeople}
-                            onChange={handleChange}
-                            helperText={formErrors.numberOfPeople}
-                        />
-                        <TextField
-                            error={formErrors.priceForNight}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="priceForNight"
-                            name="priceForNight"
-                            label="Price For Night"
-                            autoFocus
-                            type="number"
-                            value={addRequestModel.priceForNight}
-                            onChange={handleChange}
-                            helperText={formErrors.priceForNight}
-                        />
-                        <TextField
-                            error={formErrors.description}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            autoFocus
-                            name="description"
-                            label="Description"
-                            id="description"
-                            onChange={handleChange}
-                            multiline
-                            rowsMin={4}
-                            rowsMax={8}
-                            value={addRequestModel.description}
-                            helperText={formErrors.description}
-                        />
-                        <Select
-                            error={formErrors.roomType}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="roomType"
-                            label="Room Type"
-                            id="roomType"
-                            //autoFocus
-                            onChange={handleChange}
-                            value={addRequestModel.roomType}
-                            helperText={formErrors.roomType}
-                        >
-                            <MenuItem value={1}>Standart</MenuItem>
-                            <MenuItem value={2}>DeLuxe</MenuItem>
-                            <MenuItem value={3}>FamilyRoom</MenuItem>
-                            <MenuItem value={4}>Apartament</MenuItem>
-                        </Select>
-                        <TextField
-                            error={formErrors.image}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="image"
-                            id="image"
-                            type="file"
-                            autoFocus
-                            onChange={handleChange}
-                            value={addRequestModel.image}
-                            inputRef={fileRef}
-                            inputProps={{ multiple: 'multiple' }}
-                            helperText={formErrors.image}
-                        />
-
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                            onClick={addRoom}
-                        >
-                            Add Room
-                        </Button>
-                    </form>
-                </div>
-    </Container>*/}
         </>
     );
 }
