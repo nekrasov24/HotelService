@@ -186,58 +186,54 @@ function HomePage() {
                                             >
                                                 Choose dates
                                             </Button>
-                                            <Dialog
-                                                maxWidth="lg"
-                                                open={open}
-                                                onClose={handleClose}
-                                                aria-labelledby="max-width-dialog-title"
-                                            >
-                                                <DialogTitle id="max-width-dialog-title">
-                                                    Choose dates
-                                                </DialogTitle>
-                                                <DialogContent>
-                                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                        <Grid container justify="space-around">
-                                                            <KeyboardDatePicker
-                                                                disableToolbar
-                                                                variant="inline"
-                                                                format="MM/dd/yyyy"
-                                                                margin="normal"
-                                                                id="date-picker-inline"
-                                                                label="Date picker inline"
-                                                                value={selectedStartDate}
-                                                                onChange={handleStartDateChange}
-                                                                KeyboardButtonProps={{
-                                                                    'aria-label': 'change date',
-                                                                }}
-                                                            />
-                                                            <KeyboardDatePicker
-                                                                disableToolbar
-                                                                variant="inline"
-                                                                format="MM/dd/yyyy"
-                                                                margin="normal"
-                                                                id="date-picker-inline"
-                                                                label="Date picker inline"
-                                                                value={selectedFinishedDate}
-                                                                onChange={handleFinishedDateChange}
-                                                                KeyboardButtonProps={{
-                                                                    'aria-label': 'change date',
-                                                                }}
-                                                            />
-                                                        </Grid>
-                                                    </MuiPickersUtilsProvider>
-                                                </DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleClose} color="primary">
-                                                        Close
-                                                    </Button>
-                                                </DialogActions>
-                                            </Dialog>
                                         </CardActions>
                                     </Card>
                                 </Grid>
                             ))}
                         </Grid>
+                        <Dialog
+                            maxWidth="lg"
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="max-width-dialog-title"
+                        >
+                            <DialogTitle id="max-width-dialog-title">Choose dates</DialogTitle>
+                            <DialogContent>
+                                <Grid container justify="space-around">
+                                    <KeyboardDatePicker
+                                        disableToolbar
+                                        variant="inline"
+                                        format="MM/dd/yyyy"
+                                        margin="normal"
+                                        id="date-picker-inline"
+                                        label="Date picker inline"
+                                        value={selectedStartDate}
+                                        onChange={handleStartDateChange}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                    <KeyboardDatePicker
+                                        disableToolbar
+                                        variant="inline"
+                                        format="MM/dd/yyyy"
+                                        margin="normal"
+                                        id="date-picker-inline"
+                                        label="Date picker inline"
+                                        value={selectedFinishedDate}
+                                        onChange={handleFinishedDateChange}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                </Grid>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} color="primary">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </Container>
                 </main>
             </React.Fragment>

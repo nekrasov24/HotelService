@@ -15,6 +15,8 @@ import DeleteRoom from './Components/DeleteRoom';
 import RoomManagement from './Components/RoomManagement';
 import EditProfile from './Components/EditProfile';
 import UsersBooks from 'Components/UsersBooks';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 function Show({ children }) {
     const location = useLocation();
@@ -29,23 +31,25 @@ function App() {
     return (
         <SnackbarProvider maxSnack={3}>
             <Router>
-                <Show>
-                    <NavigationBar />
-                </Show>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Show>
+                        <NavigationBar />
+                    </Show>
 
-                <Switch>
-                    <Route path="/homepage" component={HomePage} />
-                    <Route path="/roomManagement" component={RoomManagement} />
-                    <Route path="/profile" component={Profile} />
-                    <Route path="/edit-profile/:userId" component={EditProfile} />
-                    <Route path="/register" component={Register} />
-                    <Route path="/authenticate" component={Authenticate} />
-                    <Route path="/addroom" component={AddRoom} />
-                    <Route path="/edit-room/:roomId" component={EditRoom} />
-                    <Route path="/delete-room/:roomId" component={DeleteRoom} />
-                    <Route path="/usersbooks" component={UsersBooks} />
-                    <Route path="/" component={Welcome} />
-                </Switch>
+                    <Switch>
+                        <Route path="/homepage" component={HomePage} />
+                        <Route path="/roomManagement" component={RoomManagement} />
+                        <Route path="/profile" component={Profile} />
+                        <Route path="/edit-profile/:userId" component={EditProfile} />
+                        <Route path="/register" component={Register} />
+                        <Route path="/authenticate" component={Authenticate} />
+                        <Route path="/addroom" component={AddRoom} />
+                        <Route path="/edit-room/:roomId" component={EditRoom} />
+                        <Route path="/delete-room/:roomId" component={DeleteRoom} />
+                        <Route path="/usersbooks" component={UsersBooks} />
+                        <Route path="/" component={Welcome} />
+                    </Switch>
+                </MuiPickersUtilsProvider>
             </Router>
         </SnackbarProvider>
     );
