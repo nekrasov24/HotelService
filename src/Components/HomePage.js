@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import 'Styles/WelcomeStyle.css';
 import axios from 'axios';
 import Card from '@material-ui/core/Card';
@@ -10,6 +10,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { converterRoomType } from 'Services/ConverterRoomType';
 import Carousel from 'react-material-ui-carousel';
+import { converterStatusType } from 'Services/ConverterStatusType';
+import {
+    Button,
+    CardActions,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from '@material-ui/core';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -45,11 +58,48 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         objectFit: 'fill',
     },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        margin: 'auto',
+        width: 'fit-content',
+    },
+    formControl: {
+        marginTop: theme.spacing(2),
+        minWidth: 120,
+    },
+    formControlLabel: {
+        marginTop: theme.spacing(1),
+    },
 }));
 
 function HomePage() {
     const classes = useStyles();
     const [room, setRooms] = useState([]);
+    const { enqueueSnackbar } = useSnackbar();
+    const [open, setOpen] = React.useState(false);
+    const [selectedStartDate, setSelectedStartDate] = React.useState(
+        new Date('2021-01-18T21:11:54'),
+    );
+    const [selectedFinishedDate, setSelectedFinishedDate] = React.useState(
+        new Date('2021-01-18T21:11:54'),
+    );
+
+    const handleStartDateChange = (date) => {
+        setSelectedStartDate(date);
+    };
+
+    const handleFinishedDateChange = (date) => {
+        setSelectedFinishedDate(date);
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         axios.get('https://localhost:44344/api/getallrooms').then((response) => {
@@ -57,6 +107,25 @@ function HomePage() {
             console.log(response.data);
         });
     }, []);
+
+    const handleSubmit = (roomId) => {
+        const bookData = {
+            roomId: roomId,
+            reservStartDate: selectedStartDate,
+            reservFinishedDate: selectedFinishedDate,
+        };
+        axios
+            .post('https://localhost:44344/api/book', bookData)
+            .then((res) => {
+                const response = res.data;
+                enqueueSnackbar(response, {
+                    variant: 'success',
+                });
+            })
+            .catch((res) => {
+                console.log(res);
+            });
+    };
 
     return (
         <>
@@ -97,7 +166,74 @@ function HomePage() {
                                                 {' '}
                                                 Type: {converterRoomType(r.roomType)}
                                             </Typography>
+                                            <Typography>
+                                                {' '}
+                                                Status: {converterStatusType(r.status)}
+                                            </Typography>
                                         </CardContent>
+                                        <CardActions>
+                                            <Button
+                                                size="small"
+                                                color="primary"
+                                                onClick={() => handleSubmit(r.id)}
+                                            >
+                                                Book
+                                            </Button>
+                                            <Button
+                                                size="small"
+                                                color="primary"
+                                                onClick={handleClickOpen}
+                                            >
+                                                Choose dates
+                                            </Button>
+                                            <Dialog
+                                                maxWidth="lg"
+                                                open={open}
+                                                onClose={handleClose}
+                                                aria-labelledby="max-width-dialog-title"
+                                            >
+                                                <DialogTitle id="max-width-dialog-title">
+                                                    Choose dates
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                        <Grid container justify="space-around">
+                                                            <KeyboardDatePicker
+                                                                disableToolbar
+                                                                variant="inline"
+                                                                format="MM/dd/yyyy"
+                                                                margin="normal"
+                                                                id="date-picker-inline"
+                                                                label="Date picker inline"
+                                                                value={selectedStartDate}
+                                                                onChange={handleStartDateChange}
+                                                                KeyboardButtonProps={{
+                                                                    'aria-label': 'change date',
+                                                                }}
+                                                            />
+                                                            <KeyboardDatePicker
+                                                                disableToolbar
+                                                                variant="inline"
+                                                                format="MM/dd/yyyy"
+                                                                margin="normal"
+                                                                id="date-picker-inline"
+                                                                label="Date picker inline"
+                                                                value={selectedFinishedDate}
+                                                                onChange={handleFinishedDateChange}
+                                                                KeyboardButtonProps={{
+                                                                    'aria-label': 'change date',
+                                                                }}
+                                                            />
+                                                        </Grid>
+                                                    </MuiPickersUtilsProvider>
+                                                </DialogContent>
+                                                <DialogActions>
+                                                    <Button onClick={handleClose} color="primary">
+                                                        Close
+                                                    </Button>
+                                                </DialogActions>
+                                            </Dialog>
+                                        </CardActions>
                                     </Card>
                                 </Grid>
                             ))}

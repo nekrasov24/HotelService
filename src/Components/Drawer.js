@@ -40,6 +40,11 @@ export default function UserDraw() {
         console.log();
     };
 
+    const redirectBooks = () => {
+        history.push('/usersbooks');
+        console.log();
+    };
+
     const list = (anchor) => (
         <div
             className={clsx(classes.list, {
@@ -57,6 +62,16 @@ export default function UserDraw() {
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
                             <ListItemText primary={text} onClick={redirectProfile} />
+                        </ListItem>
+                    </>
+                ))}
+                {['Books'].map((text, index) => (
+                    <>
+                        <ListItem button key={text}>
+                            <ListItemIcon>
+                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            </ListItemIcon>
+                            <ListItemText primary={text} onClick={redirectBooks} />
                         </ListItem>
                     </>
                 ))}

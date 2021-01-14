@@ -14,6 +14,7 @@ import EditRoom from './Components/EditRoom';
 import DeleteRoom from './Components/DeleteRoom';
 import RoomManagement from './Components/RoomManagement';
 import EditProfile from './Components/EditProfile';
+import UsersBooks from 'Components/UsersBooks';
 
 function Show({ children }) {
     const location = useLocation();
@@ -42,6 +43,7 @@ function App() {
                     <Route path="/addroom" component={AddRoom} />
                     <Route path="/edit-room/:roomId" component={EditRoom} />
                     <Route path="/delete-room/:roomId" component={DeleteRoom} />
+                    <Route path="/usersbooks" component={UsersBooks} />
                     <Route path="/" component={Welcome} />
                 </Switch>
             </Router>

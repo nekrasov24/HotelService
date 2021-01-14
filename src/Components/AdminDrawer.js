@@ -38,6 +38,10 @@ export default function AdminDraw() {
         history.push('/roomManagement');
         console.log();
     };
+    const redirectBooks = () => {
+        history.push('/usersbooks');
+        console.log();
+    };
     /*const redirectProfile = () => {
         history.push('/profile');
         console.log();
@@ -60,6 +64,16 @@ export default function AdminDraw() {
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
                             <ListItemText primary={text} onClick={redirectRoomManagement} />
+                        </ListItem>
+                    </>
+                ))}
+                {['Books'].map((text, index) => (
+                    <>
+                        <ListItem button key={text}>
+                            <ListItemIcon>
+                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                            </ListItemIcon>
+                            <ListItemText primary={text} onClick={redirectBooks} />
                         </ListItem>
                     </>
                 ))}
