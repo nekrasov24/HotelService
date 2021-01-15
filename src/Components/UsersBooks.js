@@ -82,7 +82,7 @@ function UsersBooks() {
         description: '',
         roomType: '',
     });
-    const [books, setBooks] = useState({
+    /*const [books, setBooks] = useState({
         startDateOfBooking: '',
         finishDateOfBooking: '',
         reservStartDate: '',
@@ -90,7 +90,9 @@ function UsersBooks() {
         userId: '',
         roomId: '',
         id: '',
-    });
+    });*/
+
+    const [books, setBooks] = useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -142,83 +144,83 @@ function UsersBooks() {
                     <Container className={classes.cardGrid} maxWidth="md">
                         {/* End hero unit */}
                         <Grid container spacing={4}>
-                            {/*{books.map((r) => (*/}
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Card className={classes.card}>
-                                    <CardContent className={classes.cardContent}>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            StartDateOfBooking: {books.startDateOfBooking}
-                                        </Typography>
-                                        <Typography>
-                                            FinishDateOfBooking: {books.finishDateOfBooking}
-                                        </Typography>
-                                        <Typography>
-                                            ReservStartDate: {books.reservStartDate}
-                                        </Typography>
-                                        <Typography>
-                                            {' '}
-                                            ReservFinishedDate: {books.reservFinishedDate}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button onClick={cancelReservation} color="primary">
-                                            Remove Book
-                                        </Button>
-                                        <Button
-                                            onClick={showRoom}
-                                            onChange={handleClickOpen}
-                                            color="primary"
-                                        >
-                                            Detales
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                                <Dialog
-                                    maxWidth="lg"
-                                    open={open}
-                                    onClose={handleClose}
-                                    aria-labelledby="max-width-dialog-title"
-                                >
-                                    <DialogTitle id="max-width-dialog-title">
-                                        Choose dates
-                                    </DialogTitle>
-                                    <DialogContent>
-                                        <Card className={classes.card}>
-                                            <CardContent className={classes.cardContent}>
-                                                <Typography
-                                                    gutterBottom
-                                                    variant="h5"
-                                                    component="h2"
-                                                >
-                                                    Name: {room.name}
-                                                </Typography>
-                                                <Typography>Number: {room.number}</Typography>
-                                                <Typography>
-                                                    Description: {room.description}
-                                                </Typography>
-                                                <Typography>
-                                                    {' '}
-                                                    Number Of People: {room.numberOfPeople}
-                                                </Typography>
-                                                <Typography>
-                                                    {' '}
-                                                    Price: {room.priceForNight}
-                                                </Typography>
-                                                <Typography>
-                                                    {' '}
-                                                    Type: {converterRoomType(room.roomType)}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleClose} color="primary">
-                                            Close
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-                            </Grid>
-                            {/*} ))} */}
+                            {books.map((r) => (
+                                <Grid item xs={12} sm={6} md={4}>
+                                    <Card className={classes.card}>
+                                        <CardContent className={classes.cardContent}>
+                                            <Typography gutterBottom variant="h5" component="h2">
+                                                StartDateOfBooking: {r.startDateOfBooking}
+                                            </Typography>
+                                            <Typography>
+                                                FinishDateOfBooking: {r.finishDateOfBooking}
+                                            </Typography>
+                                            <Typography>
+                                                ReservStartDate: {r.reservStartDate}
+                                            </Typography>
+                                            <Typography>
+                                                {' '}
+                                                ReservFinishedDate: {r.reservFinishedDate}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            <Button onClick={cancelReservation} color="primary">
+                                                Remove Book
+                                            </Button>
+                                            <Button
+                                                onClick={showRoom}
+                                                onChange={handleClickOpen}
+                                                color="primary"
+                                            >
+                                                Detales
+                                            </Button>
+                                        </CardActions>
+                                    </Card>
+                                    <Dialog
+                                        maxWidth="lg"
+                                        open={open}
+                                        onClose={handleClose}
+                                        aria-labelledby="max-width-dialog-title"
+                                    >
+                                        <DialogTitle id="max-width-dialog-title">
+                                            Choose dates
+                                        </DialogTitle>
+                                        <DialogContent>
+                                            <Card className={classes.card}>
+                                                <CardContent className={classes.cardContent}>
+                                                    <Typography
+                                                        gutterBottom
+                                                        variant="h5"
+                                                        component="h2"
+                                                    >
+                                                        Name: {room.name}
+                                                    </Typography>
+                                                    <Typography>Number: {room.number}</Typography>
+                                                    <Typography>
+                                                        Description: {room.description}
+                                                    </Typography>
+                                                    <Typography>
+                                                        {' '}
+                                                        Number Of People: {room.numberOfPeople}
+                                                    </Typography>
+                                                    <Typography>
+                                                        {' '}
+                                                        Price: {room.priceForNight}
+                                                    </Typography>
+                                                    <Typography>
+                                                        {' '}
+                                                        Type: {converterRoomType(room.roomType)}
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleClose} color="primary">
+                                                Close
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                </Grid>
+                            ))}
                         </Grid>
                     </Container>
                 </main>
