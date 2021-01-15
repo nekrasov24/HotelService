@@ -89,7 +89,7 @@ function DeleteRoom() {
         if (result) {
             setFormErrors((formErrors) => ({ ...formErrors, err: null }));
             axios
-                .delete(`https://localhost:44344/api/${roomId}`)
+                .delete(`https://localhost:44344/api/rooms/${roomId}`)
                 .then((res) => {
                     const responce = res.data;
                     history.push('/roomManagement');

@@ -17,6 +17,7 @@ import { generatePath } from 'react-router';
 import AuthContext from '../Contexts/AuthContext/AuthContext';
 import ButtonGroup from '@material-ui/core/CardMedia';
 import Carousel from 'react-material-ui-carousel';
+import { converterStatusType } from 'Services/ConverterStatusType';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -146,6 +147,10 @@ function RoomManagement() {
                                             <Typography>
                                                 {' '}
                                                 Type: {converterRoomType(r.roomType)}
+                                            </Typography>
+                                            <Typography>
+                                                {' '}
+                                                Status: {converterStatusType(r.status)}
                                             </Typography>
                                         </CardContent>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'Styles/WelcomeStyle.css';
 import axios from 'axios';
 import Card from '@material-ui/core/Card';
@@ -9,9 +9,16 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { converterRoomType } from 'Services/ConverterRoomType';
-import Carousel from 'react-material-ui-carousel';
-import { converterStatusType } from 'Services/ConverterStatusType';
-import { Button, CardActions } from '@material-ui/core';
+import {
+    Button,
+    CardActions,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -64,14 +71,68 @@ const useStyles = makeStyles((theme) => ({
 
 function UsersBooks() {
     const classes = useStyles();
-    const [room, setRooms] = useState([]);
+    const history = useHistory();
+    const { enqueueSnackbar } = useSnackbar();
+    const [open, setOpen] = React.useState(false);
+    const [room, setRoom] = useState({
+        name: '',
+        number: '',
+        numberOfPeople: '',
+        priceForNight: '',
+        description: '',
+        roomType: '',
+    });
+    const [books, setBooks] = useState({
+        startDateOfBooking: '',
+        finishDateOfBooking: '',
+        reservStartDate: '',
+        reservFinishedDate: '',
+        userId: '',
+        roomId: '',
+        id: '',
+    });
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
-        axios.get('https://localhost:44344/api/getallrooms').then((response) => {
-            setRooms(response.data);
+        axios.get('https://localhost:44344/api/booking/get').then((response) => {
+            setBooks(response.data);
             console.log(response.data);
         });
     }, []);
+
+    const cancelReservation = (e) => {
+        e.preventDefault();
+
+        /*const data = {
+            id: books.id
+        };*/
+
+        axios.delete(`https://localhost:44344/api/booking/${books.id}`).then((res) => {
+            const responce = res.data;
+
+            history.push('/HomePage');
+            enqueueSnackbar(responce, {
+                variant: 'success',
+            });
+        });
+    };
+
+    const showRoom = (e) => {
+        e.preventDefault();
+
+        console.log(books.roomId);
+        axios.get(`https://localhost:44344/api/rooms/${books.roomId}`).then((res) => {
+            setRoom(res.data);
+            setOpen(true);
+        });
+    };
 
     return (
         <>
@@ -81,33 +142,83 @@ function UsersBooks() {
                     <Container className={classes.cardGrid} maxWidth="md">
                         {/* End hero unit */}
                         <Grid container spacing={4}>
-                            {room.map((r) => (
-                                <Grid item xs={12} sm={6} md={4}>
-                                    <Card className={classes.card}>
-                                        <CardContent className={classes.cardContent}>
-                                            <Typography gutterBottom variant="h5" component="h2">
-                                                Name: {r.name}
-                                            </Typography>
-                                            <Typography>Number: {r.number}</Typography>
-                                            <Typography>Description: {r.description}</Typography>
-                                            <Typography>
-                                                {' '}
-                                                Number Of People: {r.numberOfPeople}
-                                            </Typography>
-                                            <Typography> Price: {r.priceForNight}</Typography>
-                                            <Typography>
-                                                {' '}
-                                                Type: {converterRoomType(r.roomType)}
-                                            </Typography>
-                                            <Typography>
-                                                {' '}
-                                                Status: {converterStatusType(r.status)}
-                                            </Typography>
-                                        </CardContent>
-                                        <CardActions></CardActions>
-                                    </Card>
-                                </Grid>
-                            ))}
+                            {/*{books.map((r) => (*/}
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Card className={classes.card}>
+                                    <CardContent className={classes.cardContent}>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            StartDateOfBooking: {books.startDateOfBooking}
+                                        </Typography>
+                                        <Typography>
+                                            FinishDateOfBooking: {books.finishDateOfBooking}
+                                        </Typography>
+                                        <Typography>
+                                            ReservStartDate: {books.reservStartDate}
+                                        </Typography>
+                                        <Typography>
+                                            {' '}
+                                            ReservFinishedDate: {books.reservFinishedDate}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button onClick={cancelReservation} color="primary">
+                                            Remove Book
+                                        </Button>
+                                        <Button
+                                            onClick={showRoom}
+                                            onChange={handleClickOpen}
+                                            color="primary"
+                                        >
+                                            Detales
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                                <Dialog
+                                    maxWidth="lg"
+                                    open={open}
+                                    onClose={handleClose}
+                                    aria-labelledby="max-width-dialog-title"
+                                >
+                                    <DialogTitle id="max-width-dialog-title">
+                                        Choose dates
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <Card className={classes.card}>
+                                            <CardContent className={classes.cardContent}>
+                                                <Typography
+                                                    gutterBottom
+                                                    variant="h5"
+                                                    component="h2"
+                                                >
+                                                    Name: {room.name}
+                                                </Typography>
+                                                <Typography>Number: {room.number}</Typography>
+                                                <Typography>
+                                                    Description: {room.description}
+                                                </Typography>
+                                                <Typography>
+                                                    {' '}
+                                                    Number Of People: {room.numberOfPeople}
+                                                </Typography>
+                                                <Typography>
+                                                    {' '}
+                                                    Price: {room.priceForNight}
+                                                </Typography>
+                                                <Typography>
+                                                    {' '}
+                                                    Type: {converterRoomType(room.roomType)}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleClose} color="primary">
+                                            Close
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </Grid>
+                            {/*} ))} */}
                         </Grid>
                     </Container>
                 </main>

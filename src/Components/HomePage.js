@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'Styles/WelcomeStyle.css';
 import axios from 'axios';
 import Card from '@material-ui/core/Card';
@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { converterRoomType } from 'Services/ConverterRoomType';
 import Carousel from 'react-material-ui-carousel';
-import { converterStatusType } from 'Services/ConverterStatusType';
+
 import {
     Button,
     CardActions,
@@ -19,8 +19,7 @@ import {
     DialogContent,
     DialogTitle,
 } from '@material-ui/core';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import { useSnackbar } from 'notistack';
 
@@ -123,7 +122,11 @@ function HomePage() {
                 });
             })
             .catch((res) => {
-                console.log(res);
+                const response = res.response.data;
+                console.log(res.data);
+                enqueueSnackbar(response, {
+                    variant: 'error',
+                });
             });
     };
 
@@ -165,10 +168,6 @@ function HomePage() {
                                             <Typography>
                                                 {' '}
                                                 Type: {converterRoomType(r.roomType)}
-                                            </Typography>
-                                            <Typography>
-                                                {' '}
-                                                Status: {converterStatusType(r.status)}
                                             </Typography>
                                         </CardContent>
                                         <CardActions>
