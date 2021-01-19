@@ -10,6 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { converterRoomType } from 'Services/ConverterRoomType';
 import Carousel from 'react-material-ui-carousel';
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { useHistory } from 'react-router-dom';
 
 import {
     Button,
@@ -22,6 +24,7 @@ import {
 import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import { useSnackbar } from 'notistack';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -72,62 +75,138 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function validateStartDates(reservStartDate, reservFinishedDate) {
+    //if (!reservStartDate) {
+    //return 'Please, choose Date';
+    //}
+    if (reservStartDate >= reservFinishedDate) {
+        return 'Start Date can not be less than Finish Date';
+    }
+    return '';
+}
+
+/*function validateFinishDates(reservFinishedDate) {
+    if (!reservFinishedDate) {
+        return 'Please, choose Date';
+    }
+
+    return '';
+}*/
+
 function HomePage() {
     const classes = useStyles();
     const [room, setRooms] = useState([]);
     const { enqueueSnackbar } = useSnackbar();
     const [open, setOpen] = React.useState(false);
-    const [selectedStartDate, setSelectedStartDate] = React.useState(
-        new Date('2021-01-18T21:11:54'),
-    );
-    const [selectedFinishedDate, setSelectedFinishedDate] = React.useState(
-        new Date('2021-01-18T21:11:54'),
-    );
+    const [selectedStartDate, setSelectedStartDate] = React.useState(new Date());
+    const [selectedFinishedDate, setSelectedFinishedDate] = React.useState(new Date());
+    const history = useHistory();
+    const [identificator, setIdentificator] = useState();
+    const [startDateOpen, setStartDateOpen] = React.useState(false);
+    const [finishDateOpen, setFinishDateOpen] = React.useState(false);
+
+    const [formErrors, setFormErrors] = useState({
+        //startDate: '',
+        //finishedDate: '',
+        err: '',
+    });
+
+    const validate = () => {
+        var propErrors = {
+            /*startDate: '',
+            finishedDate: '',*/
+            err: '',
+        };
+
+        var isValid = true;
+
+        propErrors.err = validateStartDates(selectedStartDate, selectedFinishedDate);
+        if (propErrors.err) {
+            isValid = false;
+        }
+        /*propErrors.finishedDate = validateFinishDates(selectedFinishedDate);
+        if (propErrors.finishedDate) {
+            isValid = false;
+        }*/
+        return { propErrors, isValid };
+    };
 
     const handleStartDateChange = (date) => {
         setSelectedStartDate(date);
+        setStartDateOpen(false);
     };
 
     const handleFinishedDateChange = (date) => {
         setSelectedFinishedDate(date);
+        setFinishDateOpen(false);
     };
 
-    const handleClickOpen = () => {
+    const handleClickOpen = (id) => {
         setOpen(true);
+        setIdentificator(id);
     };
 
     const handleClose = () => {
         setOpen(false);
     };
 
+    const handleCloseStartDate = () => {
+        setStartDateOpen(false);
+    };
+
+    const handleCloseFinishDate = () => {
+        setFinishDateOpen(false);
+    };
+    const handleOpenStartDate = () => {
+        setStartDateOpen(true);
+    };
+
+    const handleOpenFinishDate = () => {
+        setFinishDateOpen(true);
+    };
+
+    const filterOptions = createFilterOptions({
+        matchFrom: 'start',
+        stringify: (option) => option.title,
+    });
+
     useEffect(() => {
         axios.get('https://localhost:44344/api/getallrooms').then((response) => {
             setRooms(response.data);
-            console.log(response.data);
         });
     }, []);
 
     const handleSubmit = (roomId) => {
-        const bookData = {
-            roomId: roomId,
-            reservStartDate: selectedStartDate,
-            reservFinishedDate: selectedFinishedDate,
-        };
-        axios
-            .post('https://localhost:44344/api/book', bookData)
-            .then((res) => {
-                const response = res.data;
-                enqueueSnackbar(response, {
-                    variant: 'success',
+        const { propErrors, isValid } = validate();
+
+        setFormErrors((formErrors) => ({ ...formErrors, ...propErrors }));
+        console.log(roomId);
+        console.log(roomId);
+        console.log(roomId);
+        if (isValid) {
+            const bookData = {
+                roomId: identificator,
+                reservStartDate: selectedStartDate.toISOString(),
+                reservFinishedDate: selectedFinishedDate.toISOString(),
+            };
+
+            axios
+                .post('https://localhost:44344/api/book', bookData)
+                .then((res) => {
+                    history.push('/usersbooks');
+                    const response = res.data;
+                    enqueueSnackbar(response, {
+                        variant: 'success',
+                    });
+                })
+                .catch((res) => {
+                    const response = res.response.data;
+                    console.log(res.data);
+                    enqueueSnackbar(response, {
+                        variant: 'error',
+                    });
                 });
-            })
-            .catch((res) => {
-                const response = res.response.data;
-                console.log(res.data);
-                enqueueSnackbar(response, {
-                    variant: 'error',
-                });
-            });
+        }
     };
 
     return (
@@ -137,6 +216,7 @@ function HomePage() {
                 <main>
                     <Container className={classes.cardGrid} maxWidth="md">
                         {/* End hero unit */}
+
                         <Grid container spacing={4}>
                             {room.map((r) => (
                                 <Grid item xs={12} sm={6} md={4}>
@@ -174,14 +254,7 @@ function HomePage() {
                                             <Button
                                                 size="small"
                                                 color="primary"
-                                                onClick={() => handleSubmit(r.id)}
-                                            >
-                                                Book
-                                            </Button>
-                                            <Button
-                                                size="small"
-                                                color="primary"
-                                                onClick={handleClickOpen}
+                                                onClick={() => handleClickOpen(r.id)}
                                             >
                                                 Choose dates
                                             </Button>
@@ -198,8 +271,11 @@ function HomePage() {
                         >
                             <DialogTitle id="max-width-dialog-title">Choose dates</DialogTitle>
                             <DialogContent>
+                                {formErrors.err && <Alert severity="error">{formErrors.err}</Alert>}
                                 <Grid container justify="space-around">
                                     <KeyboardDatePicker
+                                        error={formErrors.startDate}
+                                        helperText={formErrors.startDate}
                                         disableToolbar
                                         variant="inline"
                                         format="MM/dd/yyyy"
@@ -208,11 +284,16 @@ function HomePage() {
                                         label="Date picker inline"
                                         value={selectedStartDate}
                                         onChange={handleStartDateChange}
+                                        onClose={handleCloseStartDate}
+                                        open={startDateOpen}
+                                        onOpen={handleOpenStartDate}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change date',
                                         }}
                                     />
                                     <KeyboardDatePicker
+                                        error={formErrors.finishedDate}
+                                        helperText={formErrors.finishedDate}
                                         disableToolbar
                                         variant="inline"
                                         format="MM/dd/yyyy"
@@ -221,6 +302,8 @@ function HomePage() {
                                         label="Date picker inline"
                                         value={selectedFinishedDate}
                                         onChange={handleFinishedDateChange}
+                                        onClose={handleCloseFinishDate}
+                                        onOpen={handleOpenFinishDate}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change date',
                                         }}
@@ -230,6 +313,13 @@ function HomePage() {
                             <DialogActions>
                                 <Button onClick={handleClose} color="primary">
                                     Close
+                                </Button>
+                                <Button
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => handleSubmit(identificator)}
+                                >
+                                    Books
                                 </Button>
                             </DialogActions>
                         </Dialog>
