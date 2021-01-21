@@ -89,6 +89,18 @@ const columns = [
         format: (value) => new Date(value).toLocaleDateString(),
     },
     {
+        id: 'numberOfNights',
+        label: 'Number Of Nights',
+        minWidth: 170,
+        //format: (value) => Number(value),
+    },
+    {
+        id: 'amountPaid',
+        label: 'Amount Paid',
+        minWidth: 100,
+        //format: (value) => Number(value),
+    },
+    {
         id: 'cancel',
         label: 'Cancel',
         minWidth: 100,
@@ -164,6 +176,8 @@ function UsersBooks() {
                                     finishDateOfBooking: book.finishDateOfBooking,
                                     reservStartDate: book.reservStartDate,
                                     reservFinishedDate: book.reservFinishedDate,
+                                    numberOfNights: book.numberOfNights,
+                                    amountPaid: book.amountPaid,
                                     cancel: (
                                         <Button
                                             onClick={() => cancelReservation(book.id)}

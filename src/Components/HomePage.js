@@ -106,15 +106,11 @@ function HomePage() {
     const [finishDateOpen, setFinishDateOpen] = React.useState(false);
 
     const [formErrors, setFormErrors] = useState({
-        //startDate: '',
-        //finishedDate: '',
         err: '',
     });
 
     const validate = () => {
         var propErrors = {
-            /*startDate: '',
-            finishedDate: '',*/
             err: '',
         };
 
@@ -124,10 +120,7 @@ function HomePage() {
         if (propErrors.err) {
             isValid = false;
         }
-        /*propErrors.finishedDate = validateFinishDates(selectedFinishedDate);
-        if (propErrors.finishedDate) {
-            isValid = false;
-        }*/
+
         return { propErrors, isValid };
     };
 
