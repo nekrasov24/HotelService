@@ -67,19 +67,19 @@ const columns = [
     {
         id: 'startDateOfBooking',
         label: 'Start Date OfBooking',
-        minWidth: 170,
+        minWidth: 100,
         format: (value) => new Date(value).toLocaleString(),
     },
     {
         id: 'finishDateOfBooking',
         label: 'Finish Date OfBooking',
-        minWidth: 170,
+        minWidth: 100,
         format: (value) => new Date(value).toLocaleString(),
     },
     {
         id: 'reservStartDate',
         label: 'Reserv Start Date',
-        minWidth: 170,
+        minWidth: 100,
         format: (value) => new Date(value).toLocaleDateString(),
     },
     {
@@ -91,24 +91,29 @@ const columns = [
     {
         id: 'numberOfNights',
         label: 'Number Of Nights',
-        minWidth: 170,
+        minWidth: 80,
         //format: (value) => Number(value),
     },
     {
         id: 'amountPaid',
         label: 'Amount Paid',
-        minWidth: 100,
+        minWidth: 80,
         //format: (value) => Number(value),
     },
     {
         id: 'cancel',
         label: 'Cancel',
-        minWidth: 100,
+        minWidth: 80,
     },
     {
         id: 'details',
-        label: 'details',
-        minWidth: 100,
+        label: 'Details',
+        minWidth: 80,
+    },
+    {
+        id: 'pay',
+        label: 'Pay',
+        minWidth: 80,
     },
 ];
 
@@ -162,6 +167,29 @@ function UsersBooks() {
         });
     };
 
+    const Payment = (id) => {
+        const payData = {
+            reservationId: id,
+        };
+
+        axios
+            .post('https://localhost:44344/api/order/pay', payData)
+            .then((res) => {
+                history.push('/HomePage');
+                const response = res.data;
+                enqueueSnackbar(response, {
+                    variant: 'success',
+                });
+            })
+            .catch((res) => {
+                const response = res.response.data;
+                console.log(res.data);
+                enqueueSnackbar(response, {
+                    variant: 'error',
+                });
+            });
+    };
+
     return (
         <>
             <React.Fragment>
@@ -193,6 +221,11 @@ function UsersBooks() {
                                             color="primary"
                                         >
                                             Details
+                                        </Button>
+                                    ),
+                                    pay: (
+                                        <Button onClick={() => Payment(book.id)} color="primary">
+                                            Pay
                                         </Button>
                                     ),
                                 };
