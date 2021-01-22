@@ -172,6 +172,14 @@ function UsersBooks() {
             reservationId: id,
         };
 
+        console.log(payData.reservationId);
+        console.log(payData.reservationId);
+        console.log(payData.reservationId);
+        console.log(payData.reservationId);
+        console.log(payData.reservationId);
+        console.log(payData.reservationId);
+        console.log(payData.reservationId);
+
         axios
             .post('https://localhost:44344/api/order/pay', payData)
             .then((res) => {

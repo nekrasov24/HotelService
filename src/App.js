@@ -17,6 +17,7 @@ import EditProfile from './Components/EditProfile';
 import UsersBooks from 'Components/UsersBooks';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import HistoryOrders from 'Components/HistoryOrders';
 
 function Show({ children }) {
     const location = useLocation();
@@ -47,6 +48,7 @@ function App() {
                         <Route path="/edit-room/:roomId" component={EditRoom} />
                         <Route path="/delete-room/:roomId" component={DeleteRoom} />
                         <Route path="/usersbooks" component={UsersBooks} />
+                        <Route path="/historyorders" component={HistoryOrders} />
                         <Route path="/" component={Welcome} />
                     </Switch>
                 </MuiPickersUtilsProvider>
